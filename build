@@ -1,0 +1,13 @@
+#!/bin/bash
+file /bin/true | grep -q "32-bit"
+x86=$?
+
+if [ $x86 -eq 0 ]; then
+  echo "Building for x86."
+  export binary_append="x86"
+  CFLAGS="-m32 -DX86" make $@
+else
+  export binary_append="x64"
+  echo "Building for x64."
+  make $@
+fi

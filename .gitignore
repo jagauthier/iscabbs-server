@@ -1,0 +1,11 @@
+*.[osd]
+*~
+/tags
+/TAGS
+bin/
+bin/
+convert_output/
+bbs_utils
+convert
+setupbbs
+core

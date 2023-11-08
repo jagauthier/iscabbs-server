@@ -1,0 +1,11 @@
+{
+    "files.associations": {
+        "convert_data.h": "c",
+        "stdbool.h": "c",
+        "defs.h": "c",
+        "ext.h": "c",
+        "typeinfo": "c",
+        "stdint.h": "c",
+        "convert_utils.h": "c"
+    }
+}
