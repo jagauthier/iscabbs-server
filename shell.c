@@ -138,6 +138,7 @@ void do_login(void) {
   char *bbsname;
   char pas[9];
   char temp[128];
+  uint8_t wrong = 0;
   char myname[MAXALIAS + 1];
 
   /* We already checked this from the queue,
@@ -164,7 +165,6 @@ void do_login(void) {
 
   more(HELLOFILE, FALSE);
 
-  //setenv("BBSNAME", "KAM", 0);
   bbsname = getenv("BBSNAME");
 
   for (;;) {
@@ -180,6 +180,7 @@ void do_login(void) {
       if ((tmpuser = getuser(name))) {
         freeuser(tmpuser);
       }
+
       if (!bbsname) {
         if (tmpuser && (!bbsname || tty) && strcmp(name, "Guest")) {
           get_string("Password: ", -8, pas, -1);
@@ -192,8 +193,12 @@ void do_login(void) {
         } else {
           my_printf("There is no user %s on this BBS.\n", name);
         }
-        my_exit(3);
+        if (++wrong > LOGIN_ATTEMPTS || bbsname) {
+          if (!bbsname) my_printf("\n\nToo many attempts.  Goodbye.\n");
+          my_exit(3);
+        }
 
+        //my_exit(3);
         flush_input(0);
         continue;
       } else {

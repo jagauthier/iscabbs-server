@@ -65,6 +65,7 @@
 #include <openssl/err.h>
 #endif
 
+#define LOGIN_ATTEMPT 3
 
 #ifndef FALSE
 #define FALSE		0
