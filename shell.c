@@ -193,7 +193,7 @@ void do_login(void) {
         } else {
           my_printf("There is no user %s on this BBS.\n", name);
         }
-        if (++wrong > LOGIN_ATTEMPTS || bbsname) {
+        if (++wrong >= LOGIN_ATTEMPTS || bbsname) {
           if (!bbsname) my_printf("\n\nToo many attempts.  Goodbye.\n");
           my_exit(3);
         }
