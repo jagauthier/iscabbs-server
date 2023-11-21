@@ -548,7 +548,7 @@ static void change_pass(struct user *tuser, int noold) {
     return;
   }
 
-  change_password(tuser, original);
+  change_password(tuser, pas);
   my_printf("\nSo be it.\n");
 }
 

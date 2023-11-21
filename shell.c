@@ -198,7 +198,7 @@ void do_login(void) {
           my_exit(3);
         }
 
-        //my_exit(3);
+        // my_exit(3);
         flush_input(0);
         continue;
       } else {
