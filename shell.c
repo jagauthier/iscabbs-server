@@ -149,14 +149,14 @@ void do_login(void) {
     if (tty) {
       close(fd);
       more(DOWNFILE, FALSE);
-      my_printf("\nDOC Version 1.7, Fbrd rev. 0.3, m0n0 (aka vDOC 1.7).\n\n");
+      my_printf("\n%s Built: %s, %s\n\n", VERSION, __DATE__, __TIME__);
       my_exit(3);
     } else {
       my_printf("The BBS is down, but you will be let in.\n\n");
     }
   }
 
-  my_printf("\nDOC Version 1.7, Fbrd rev. 0.3, m0n0 (aka vDOC 1.7).\n\n");
+  my_printf("\n%s Built: %s, %s\n\n", VERSION, __DATE__, __TIME__);
 
   if ((fd = open(MOTD, O_RDONLY)) > 0) {
     close(fd);
