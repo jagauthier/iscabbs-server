@@ -1,0 +1,6 @@
+#!/bin/sh
+cp -r ../message.orig/* ../message_x64
+cp -r ../data.orig/* ../data_x64
+
+
+

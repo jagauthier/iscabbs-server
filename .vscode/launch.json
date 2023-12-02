@@ -21,6 +21,26 @@
             ]
         },
         {
+            "name": "Struct Updates (gdb)",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/struct_updates",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "preLaunchTask": "${defaultBuildTask}",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        },
+        {
             "name": "BBS (x86)",
             "type": "cppdbg",
             "request": "launch",
@@ -32,8 +52,8 @@
             "externalConsole": false,
             "MIMode": "gdb",
             "preLaunchTask": "Build BBS",
-        }
-    {
+        },
+        {
             "name": "BBS (x64)",
             "type": "cppdbg",
             "request": "launch",
@@ -41,14 +61,18 @@
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
-            "environment": [],
+            "environment": [{
+                "name": "BBSNAME", "value": "KAM"
+            }],
             "externalConsole": false,
             "MIMode": "gdb",
             "preLaunchTask": "Build BBS",
             "setupCommands": [
-                {"text": "-gdb-set follow-fork-mode child"}
-            ]
-        }
+                {
+                    "text": "-gdb-set follow-fork-mode child"
+                }
+            ],
+        },
         {
             "name": "Utils",
             "type": "cppdbg",
@@ -61,7 +85,7 @@
             "externalConsole": false,
             "MIMode": "gdb",
             "preLaunchTask": "Build BBS Utils",
-        }
+        },
         {
             "name": "mmap_test",
             "type": "cppdbg",
