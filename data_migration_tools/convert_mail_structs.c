@@ -44,7 +44,6 @@ uint8_t convert_mail(void) {
     uint32_t totalusers;
     uint32_t link;
 
-    int32_t old_mail_pos;
     int32_t msg_location;
     int f;
 
@@ -98,9 +97,9 @@ uint8_t convert_mail(void) {
         link = udata->num[which][i];
         source = (struct user *)(udata + 1) + (link);
 
-        if (!(source->usernum == 1139 || source->usernum == 248)) {
+        /*if (!(source->usernum == 1139 || source->usernum == 248)) {
             continue;
-        }
+        }*/
 
         // printf("%s %i\n", source->name, source->usernum);
         for (uint8_t m = 0; m < MAILMSGS; m++) {
@@ -143,7 +142,6 @@ uint8_t convert_mail(void) {
                         continue;
                     }
                 }
-                old_mail_pos = source->mr[m].pos;
                 msg_location = source->mr[m].pos;
                 if (source->mr[m].pos < 0) {
                     msg_location = -source->mr[m].pos;
@@ -184,7 +182,7 @@ uint8_t convert_mail(void) {
                 // move forward one
                 fseek(fp_orig, 1, SEEK_CUR);
 
-                fread(&mh.ptime, 1, S32, fp_orig);
+                fread(&mh.ptime, 1, sizeof(time_t), fp_orig);
                 text = calloc(1, mh.len + 1);
                 if (!text) {
                     printf("Couldn't allocate any memory\n");

@@ -9,3 +9,4 @@ bbs_utils
 convert
 setupbbs
 core
+send_x_cmd

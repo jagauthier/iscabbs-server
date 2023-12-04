@@ -58,7 +58,6 @@ CONVERT_SOURCES_STRUCTS := \
 	$(DATA_SRC_DIR)/convert_mail_structs.c \
 	$(DATA_SRC_DIR)/convert_utils_structs.c
 
-
 UTIL_SOURCES := \
 	$(UTIL_SRC_DIR)/utils_main.c \
 	$(UTIL_SRC_DIR)/monitor_bigbtmp.c
@@ -122,6 +121,10 @@ struct_updates: $(CONVERT_OBJECTS_STRUCT) $(ALL_BBS_OBJECTS)
 bbs_utils: $(UTIL_OBJECTS) $(ALL_BBS_OBJECTS) 
 	$(CC) $(CPPFLAGS) $(CFLAGS) -o $@ $^ $(LDFLAGS) $(LIBS)
 
+send_x_cmd: $(ALL_BBS_OBJECTS) $(BUILDDIR)/send_x_cmd.o
+	$(CC) $(CPPFLAGS) $(CFLAGS) -o $@ $^ $(LDFLAGS) $(LIBS)
+
+
 #Make the Directories
 directories:
 	@mkdir -p $(TARGETDIR)
@@ -161,7 +164,6 @@ $(BUILDDIR)/%.$(OBJEXT): $(CNV_SRC_DIR)/%.$(SRCEXT)
 	$(CC) $(CFLAGS) $(INC) -c -o $@ $<
 	@$(CC) $(CFLAGS) $(INCDEP) -MM $(CNV_SRC_DIR)/$*.$(SRCEXT) > $(BUILDDIR)/$*.$(DEPEXT)
 
-
 $(BUILDDIR)/%.$(OBJEXT): $(DATA_SRC_DIR)/%.$(SRCEXT)
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) $(INC) -c -o $@ $<
@@ -171,10 +173,6 @@ $(BUILDDIR)/%.$(OBJEXT): $(UTIL_SRC_DIR)/%.$(SRCEXT)
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) $(INC) -c -o $@ $<
 	@$(CC) $(CFLAGS) $(INCDEP) -MM $(UTIL_SRC_DIR)/$*.$(SRCEXT) > $(BUILDDIR)/$*.$(DEPEXT)
-
-mmap_test: $(CNV_SRC_DIR)/mmap_test.c
-	gcc -g -Wall $(INC) -o mmap_test $(CNV_SRC_DIR)/mmap_test.c
-	
 
 #Non-File Targets
 #.PHONY: all remake clean cleaner resources
