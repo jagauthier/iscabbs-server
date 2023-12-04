@@ -31,7 +31,7 @@
             "environment": [],
             "externalConsole": false,
             "MIMode": "gdb",
-            "preLaunchTask": "${defaultBuildTask}",
+            "preLaunchTask": "Build struct_updates",
             "setupCommands": [
                 {
                     "description": "Enable pretty-printing for gdb",
@@ -62,7 +62,7 @@
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [{
-                "name": "BBSNAME", "value": "KAM"
+                "name": "BBSNAME", "value": "Dredd"
             }],
             "externalConsole": false,
             "MIMode": "gdb",

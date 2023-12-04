@@ -1,5 +1,11 @@
 #include <stdbool.h>
 #include <stdint.h>
+#include <stdio.h>
+#include <sys/mman.h>
+#include <bits/mman.h>
+#include <limits.h>
+#include <stddef.h>
+#include <fcntl.h>
 
 #include "defs.h"
 #include "ext.h"

@@ -405,7 +405,7 @@ struct msg
 
 #define M_MAGIC			0xfd
 
-struct mheader_new
+struct mheader
 {
   uint8_t magic;
   uint32_t poster;
@@ -433,7 +433,7 @@ struct mheader_new
   } ext;
 };
 
-struct mheader
+struct mheader_old
 {
   uint32_t magic:8;
   uint32_t poster:24;

@@ -16,8 +16,7 @@ int main(int argc, char **argv) {
     
     /* This expects the msgdata here*/
     system("cp /home/bbs/data.orig/msgdata /home/bbs/src/convert_output/data/msgdata");
-
-    find_magics();
+    system("cp /home/bbs/data.orig/userdata /home/bbs/src/convert_output/data/userdata");
 
     /* This uses the BBS function to open all the files. */
     /* Most used in development for data validation purposes */
@@ -27,7 +26,9 @@ int main(int argc, char **argv) {
         return 1;
     }
 
-    // struct user *d=finduser(NULL, 248,0);
+
+
+    struct user *d=finduser("Dredd", 0 ,0);
     printf("--- Converting Room Descs ---\n");
     ret = convert_room_descs();
     if (ret) {
