@@ -21,6 +21,26 @@
             ]
         },
         {
+            "name": "Struct Updates (gdb)",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/struct_updates",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "preLaunchTask": "Build struct_updates",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        },
+        {
             "name": "BBS (x86)",
             "type": "cppdbg",
             "request": "launch",
@@ -32,8 +52,8 @@
             "externalConsole": false,
             "MIMode": "gdb",
             "preLaunchTask": "Build BBS",
-        }
-    {
+        },
+        {
             "name": "BBS (x64)",
             "type": "cppdbg",
             "request": "launch",
@@ -41,27 +61,31 @@
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
-            "environment": [],
+            "environment": [{
+                "name": "BBSNAME", "value": "Dredd"
+            }],
             "externalConsole": false,
             "MIMode": "gdb",
             "preLaunchTask": "Build BBS",
             "setupCommands": [
-                {"text": "-gdb-set follow-fork-mode child"}
-            ]
-        }
+                {
+                    "text": "-gdb-set follow-fork-mode child"
+                }
+            ],
+        },
         {
-            "name": "Utils",
+            "name": "send_x_cmd",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/bbs_utils",
+            "program": "${workspaceFolder}/send_x_cmd",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],
             "externalConsole": false,
             "MIMode": "gdb",
-            "preLaunchTask": "Build BBS Utils",
-        }
+            "preLaunchTask": "Build send_x_cmd",
+        },
         {
             "name": "mmap_test",
             "type": "cppdbg",

@@ -338,20 +338,53 @@ void readroom(int cit_cmd) {
      * new, respectively.  The logic is: under what conditions should I skip to
      * the next message?
      */
+    
+    if (room->num[rm_msg_nbr] == 0L) {
+      rm_msg_nbr += dir;
+      continue;
+    }
 
+    if (cit_cmd == 'N') {
+      if (ouruser->f_lastold &&
+          room->num[rm_msg_nbr] < ouruser->lastseen[curr]) {
+        rm_msg_nbr += dir;
+        continue;
+      }
+      if (!(ouruser->f_lastold) &&
+          room->num[rm_msg_nbr] <= ouruser->lastseen[curr]) {
+        rm_msg_nbr += dir;
+        continue;
+      }
+    }
+    if (cit_cmd == 'O') {
+      if (room->num[rm_msg_nbr] > ouruser->lastseen[curr]) {
+        rm_msg_nbr += dir;
+        continue;
+      }
+    }
+    if (cit_cmd == '#') {
+      if (room->chron[rm_msg_nbr] < searchkey) {
+        rm_msg_nbr += dir;
+        continue;
+      }
+    }
+/*
     if ((room->num[rm_msg_nbr] == 0L) ||
         ((cit_cmd == 'N') && (ouruser->f_lastold) &&
          (room->num[rm_msg_nbr] < ouruser->lastseen[curr])) ||
+
         ((cit_cmd == 'N') && !(ouruser->f_lastold) &&
          (room->num[rm_msg_nbr] <= ouruser->lastseen[curr])) ||
+
         ((cit_cmd == 'O') &&
          (room->num[rm_msg_nbr] > ouruser->lastseen[curr])) ||
         ((cit_cmd == '#') && (room->chron[rm_msg_nbr] < searchkey))) {
       rm_msg_nbr += dir;
       continue;
     }
-
-    /* after reading a message, *auth should be set for use at prompt */
+*/
+    /* after reading a message, *auth should be set for use at prompt
+     */
     /* name returns with name of note's author in it */
     if (cit_cmd != 'N' && error != MNFERR && error != REPERR) {
       my_putchar('\n');
@@ -449,7 +482,9 @@ void readroom(int cit_cmd) {
             my_printf("Enter Forum Moderator message\n\n");
             if (ouruser->f_novice) {
               my_printf(
-                  "Enter Forum Moderator message\n\nAre you sure you want to "
+                  "Enter Forum Moderator message\n\nAre you sure you "
+                  "want "
+                  "to "
                   "enter a message as Forum Moderator? (Y/N) -> ");
               if (!yesno(-1)) {
                 break;
@@ -458,7 +493,9 @@ void readroom(int cit_cmd) {
             sysopflags |= SYSOP_FROM_FM;
           } else if (ouruser->f_admin) {
             my_printf(
-                "Enter Sysop message.\n\nNOTE: You have entering this message "
+                "Enter Sysop message.\n\nNOTE: You have entering "
+                "this "
+                "message "
                 "as Sysop!\n\n");
             sysopflags |= SYSOP_FROM_SYSOP;
           }
@@ -550,8 +587,8 @@ void readroom(int cit_cmd) {
           } else {
             my_printf("\n\nYou can only use Reply in the Mail> room.\n\n");
             /*
-                        my_printf("\n\nUse shift-R to reply outside the Mail>
-               room.\n\n");
+                        my_printf("\n\nUse shift-R to reply outside
+               the Mail> room.\n\n");
             */
             break;
           }
@@ -683,7 +720,9 @@ void readroom(int cit_cmd) {
           if (ouruser->f_elf && !ouruser->f_restricted && !ouruser->f_twit) {
             if (mybtmp->xstat && !mybtmp->elf) {
               my_printf(
-                  "\n\nYou can't enable yourself as a guide while your X's are "
+                  "\n\nYou can't enable yourself as a guide while "
+                  "your X's "
+                  "are "
                   "disabled.\n");
             } else if ((mybtmp->elf = !mybtmp->elf)) {
               my_printf(
@@ -691,7 +730,8 @@ void readroom(int cit_cmd) {
                   "others.\n");
             } else {
               my_printf(
-                  "\n\nYou are no longer marked as being available to help "
+                  "\n\nYou are no longer marked as being available "
+                  "to help "
                   "others.\n");
             }
           } else {

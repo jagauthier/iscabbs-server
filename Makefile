@@ -7,6 +7,7 @@ TARGET      := bbs_${binary_append}
 #The Directories, Source, Includes, Objects, Binary and Resources
 SRCDIR      := .
 CNV_SRC_DIR := convert_x86_x64
+DATA_SRC_DIR := data_migration_tools
 UTIL_SRC_DIR := utils
 INCDIR      := inc
 BUILDDIR    := obj_${binary_append}
@@ -48,6 +49,14 @@ CONVERT_SOURCES := \
 	$(CNV_SRC_DIR)/convert_mail.c \
 	$(CNV_SRC_DIR)/convert_utils.c \
 	$(CNV_SRC_DIR)/rebuild_xmsgs.c \
+
+# For iterative structure updates
+CONVERT_SOURCES_STRUCTS := \
+	$(DATA_SRC_DIR)/convert_structs.c \
+	$(DATA_SRC_DIR)/rebuild_messages_structs.c \
+	$(DATA_SRC_DIR)/convert_room_descs_structs.c \
+	$(DATA_SRC_DIR)/convert_mail_structs.c \
+	$(DATA_SRC_DIR)/convert_utils_structs.c
 
 UTIL_SOURCES := \
 	$(UTIL_SRC_DIR)/utils_main.c \
@@ -94,6 +103,9 @@ CONVERT_OBJECTS     := $(patsubst $(CNV_SRC_DIR)/%,$(BUILDDIR)/%,$(CONVERT_SOURC
 UTIL_OBJECTS     := $(patsubst $(UTIL_SRC_DIR)/%,$(BUILDDIR)/%,$(UTIL_SOURCES:.$(SRCEXT)=.$(OBJEXT)))
 SETUP_OBJECTS     := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SETUP_SOURCES:.$(SRCEXT)=.$(OBJEXT)))
 
+# for iterative structure updates
+CONVERT_OBJECTS_STRUCT     := $(patsubst $(DATA_SRC_DIR)/%,$(BUILDDIR)/%,$(CONVERT_SOURCES_STRUCTS:.$(SRCEXT)=.$(OBJEXT)))
+
 #Defauilt Make
 all: directories $(TARGET)
 
@@ -103,8 +115,15 @@ setupbbs: $(SETUP_OBJECTS)
 convert: $(CONVERT_OBJECTS) $(ALL_BBS_OBJECTS) 
 	$(CC) $(CPPFLAGS) $(CFLAGS) -o $@ $^ $(LDFLAGS) $(LIBS)
 
+struct_updates: $(CONVERT_OBJECTS_STRUCT) $(ALL_BBS_OBJECTS) 
+	$(CC) $(CPPFLAGS) $(CFLAGS) -o $@ $^ $(LDFLAGS) $(LIBS)
+
 bbs_utils: $(UTIL_OBJECTS) $(ALL_BBS_OBJECTS) 
 	$(CC) $(CPPFLAGS) $(CFLAGS) -o $@ $^ $(LDFLAGS) $(LIBS)
+
+send_x_cmd: $(ALL_BBS_OBJECTS) $(BUILDDIR)/send_x_cmd.o
+	$(CC) $(CPPFLAGS) $(CFLAGS) -o $@ $^ $(LDFLAGS) $(LIBS)
+
 
 #Make the Directories
 directories:
@@ -145,14 +164,15 @@ $(BUILDDIR)/%.$(OBJEXT): $(CNV_SRC_DIR)/%.$(SRCEXT)
 	$(CC) $(CFLAGS) $(INC) -c -o $@ $<
 	@$(CC) $(CFLAGS) $(INCDEP) -MM $(CNV_SRC_DIR)/$*.$(SRCEXT) > $(BUILDDIR)/$*.$(DEPEXT)
 
+$(BUILDDIR)/%.$(OBJEXT): $(DATA_SRC_DIR)/%.$(SRCEXT)
+	@mkdir -p $(dir $@)
+	$(CC) $(CFLAGS) $(INC) -c -o $@ $<
+	@$(CC) $(CFLAGS) $(INCDEP) -MM $(DATA_SRC_DIR)/$*.$(SRCEXT) > $(BUILDDIR)/$*.$(DEPEXT)
+
 $(BUILDDIR)/%.$(OBJEXT): $(UTIL_SRC_DIR)/%.$(SRCEXT)
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) $(INC) -c -o $@ $<
 	@$(CC) $(CFLAGS) $(INCDEP) -MM $(UTIL_SRC_DIR)/$*.$(SRCEXT) > $(BUILDDIR)/$*.$(DEPEXT)
-
-mmap_test: $(CNV_SRC_DIR)/mmap_test.c
-	gcc -g -Wall $(INC) -o mmap_test $(CNV_SRC_DIR)/mmap_test.c
-	
 
 #Non-File Targets
 #.PHONY: all remake clean cleaner resources

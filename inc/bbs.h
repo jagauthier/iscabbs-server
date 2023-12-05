@@ -309,7 +309,7 @@ struct bigbtmp
     int8_t connecting;
     int8_t client;
     int8_t nox;
-    int8_t unused;
+    bool idle;
     int16_t sleeptimes;
     int32_t ulink;
   } btmp[MAXUSERS];
@@ -407,29 +407,31 @@ struct msg
 
 struct mheader
 {
-  uint32_t magic:8;
-  uint32_t poster:24;
-  uint32_t :5;
-  uint32_t quotedx:1;
-  uint32_t mail:1;
-  uint32_t approval:1;
-  uint32_t hlen:6;
-  uint32_t len:18;
+  uint8_t magic;
+  uint32_t poster;
+  bool deleted;
+  uint32_t deleted_by;
+  char deleted_by_name[MAXALIAS + 1];
+  bool quotedx;
+  bool mail;
+  bool approval;
+  uint16_t hlen;
+  uint16_t len;
   uint32_t msgid;
   uint16_t forum;
   uint8_t mtype;
   time_t ptime;
-
+  /* 128 bytes that can be used in the future to reduce 
+  conversion updates */
+  uint8_t future_use[128];
   union
   {
     struct
     {
-      uint32_t :8;
-      uint32_t recipient:24;
+      uint32_t recipient;
     } mail;
   } ext;
 };
-
 
 #define X_NORMAL	0
 #define X_QUESTION	1
