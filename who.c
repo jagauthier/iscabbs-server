@@ -26,19 +26,33 @@ void show_online(int8_t level) {
   int16_t done = 0;
   int32_t whostart, whoend, whoincr;
 
-  if (level != 2 && rows != 32000) my_putchar('\n');
+  uint16_t connecting_users = 0;
+
+  if (!bigbtmp->users) {
+    return;
+  }
+
+  if (level == 0) {
+    for (uint16_t i = 0; i < bigbtmp->users; i++) {
+      btmp = &bigbtmp->btmp[bigbtmp->index[i]];
+      if (btmp->connecting) {
+        connecting_users++;
+      }
+    }
+  }
+
+  if (level != 2 && rows != 32000) {
+    my_putchar('\n');
+  }
   if (bigbtmp->users > 1) {
-    colorize("There are @Y%i@G users (@Y%i@G queued)", (bigbtmp->users),
-             bigbtmp->queued);
+    colorize("There are @Y%i@G users (@Y%i@G queued)",
+             (bigbtmp->users - connecting_users), bigbtmp->queued);
   } else {
     colorize("There is @Y1@G user (@Y%i@G queued)", bigbtmp->queued);
   }
 
   my_printf("\n\n");
 
-  if (!bigbtmp->users) {
-    return;
-  }
   curr_time = time(0);
   if (level == 1) {
     colorize("@YUser Name             @MPID  @Meternal @RTime  @CFrom@G\n");
@@ -77,6 +91,11 @@ void show_online(int8_t level) {
                                      : (btmp->eternal <= mineternal))) {
       continue;
     }
+
+    if (level == 0 && btmp->connecting) {
+      continue;
+    }
+
     mineternal = btmp->eternal;
     done++;
 
@@ -344,7 +363,8 @@ int profile(const char *name, struct user *tuser, int flags) {
     }
 
     colorize(
-        "@GTimes called:@M %d @GMessages posted:@M %d @GX messages sent:@M %i "
+        "@GTimes called:@M %d @GMessages posted:@M %d @GX messages sent:@M "
+        "%i "
         "@GUser# @M%i@G\n",
         tmpuser->timescalled, tmpuser->posted, tmpuser->totalx,
         tmpuser->usernum);
