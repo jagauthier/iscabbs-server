@@ -41,19 +41,6 @@
             ]
         },
         {
-            "name": "BBS (x86)",
-            "type": "cppdbg",
-            "request": "launch",
-            "program": "${workspaceFolder}/bin/bbs_x86",
-            "args": [],
-            "stopAtEntry": false,
-            "cwd": "${workspaceFolder}",
-            "environment": [],
-            "externalConsole": false,
-            "MIMode": "gdb",
-            "preLaunchTask": "Build BBS",
-        },
-        {
             "name": "BBS (x64)",
             "type": "cppdbg",
             "request": "launch",
