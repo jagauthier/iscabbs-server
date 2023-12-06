@@ -11,16 +11,10 @@
 #define DUMPFILE	ROOT"var/queuedump"
 #define BBSQUEUEDFIX	ROOT"core/bbsqueued"
 
-#ifdef X86
-#define BBSEXEC		ROOT"bin/bbs_x86"	/* This has to be hard coded */
-#else
-#define BBSEXEC		ROOT"bin/bbs_x64"	/* This has to be hard coded */
-#endif
+#define BBSEXEC		ROOT"bin/bbs"	/* This has to be hard coded */
 
 #define BBSARG		"_netbbs"
 #define CLIENTARG	"_clientbbs"
-
-
 
 /*
  * Strings for authorization subsystem

@@ -2,15 +2,14 @@
 CC          :=  gcc -std=gnu18
 
 #The Target Binary Program
-TARGET      := bbs_${binary_append}
-
+TARGET      := bbs
 #The Directories, Source, Includes, Objects, Binary and Resources
 SRCDIR      := .
 CNV_SRC_DIR := convert_x86_x64
 DATA_SRC_DIR := data_migration_tools
 UTIL_SRC_DIR := utils
 INCDIR      := inc
-BUILDDIR    := obj_${binary_append}
+BUILDDIR    := obj
 TARGETDIR   := bin
 RESDIR      := res
 SRCEXT      := c
@@ -51,12 +50,9 @@ CONVERT_SOURCES := \
 	$(CNV_SRC_DIR)/rebuild_xmsgs.c \
 
 # For iterative structure updates
-CONVERT_SOURCES_STRUCTS := \
-	$(DATA_SRC_DIR)/convert_structs.c \
-	$(DATA_SRC_DIR)/rebuild_messages_structs.c \
-	$(DATA_SRC_DIR)/convert_room_descs_structs.c \
-	$(DATA_SRC_DIR)/convert_mail_structs.c \
-	$(DATA_SRC_DIR)/convert_utils_structs.c
+DATA_MGMT_SRC := \
+	$(DATA_SRC_DIR)/room_shuffle.c
+
 
 UTIL_SOURCES := \
 	$(UTIL_SRC_DIR)/utils_main.c \
@@ -104,7 +100,7 @@ UTIL_OBJECTS     := $(patsubst $(UTIL_SRC_DIR)/%,$(BUILDDIR)/%,$(UTIL_SOURCES:.$
 SETUP_OBJECTS     := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SETUP_SOURCES:.$(SRCEXT)=.$(OBJEXT)))
 
 # for iterative structure updates
-CONVERT_OBJECTS_STRUCT     := $(patsubst $(DATA_SRC_DIR)/%,$(BUILDDIR)/%,$(CONVERT_SOURCES_STRUCTS:.$(SRCEXT)=.$(OBJEXT)))
+DATA_MGMT_OBJS     := $(patsubst $(DATA_SRC_DIR)/%,$(BUILDDIR)/%,$(DATA_MGMT_SRC:.$(SRCEXT)=.$(OBJEXT)))
 
 #Defauilt Make
 all: directories $(TARGET)
@@ -115,7 +111,7 @@ setupbbs: $(SETUP_OBJECTS)
 convert: $(CONVERT_OBJECTS) $(ALL_BBS_OBJECTS) 
 	$(CC) $(CPPFLAGS) $(CFLAGS) -o $@ $^ $(LDFLAGS) $(LIBS)
 
-struct_updates: $(CONVERT_OBJECTS_STRUCT) $(ALL_BBS_OBJECTS) 
+room_shuffle: $(DATA_MGMT_OBJS) $(ALL_BBS_OBJECTS) 
 	$(CC) $(CPPFLAGS) $(CFLAGS) -o $@ $^ $(LDFLAGS) $(LIBS)
 
 bbs_utils: $(UTIL_OBJECTS) $(ALL_BBS_OBJECTS) 
@@ -178,5 +174,5 @@ $(BUILDDIR)/%.$(OBJEXT): $(UTIL_SRC_DIR)/%.$(SRCEXT)
 #.PHONY: all remake clean cleaner resources
 
 install: $(TARGET)
-	install -m 550 bin/bbs_${binary_append} ../bin/bbs_${binary_append}
+	install -m 550 bin/bbs ../bin/bbs
 	#install -m 550 ssl/ssl_server ../bin/ssl_server

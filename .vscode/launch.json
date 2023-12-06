@@ -1,17 +1,17 @@
 {
     "configurations": [
         {
-            "name": "Convert (gdb)",
+            "name": "Room Shuffle (gdb)",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/convert",
+            "program": "${workspaceFolder}/room_shuffle",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],
             "externalConsole": false,
             "MIMode": "gdb",
-            "preLaunchTask": "${defaultBuildTask}",
+            "preLaunchTask": "Build room_shuffle",
             "setupCommands": [
                 {
                     "description": "Enable pretty-printing for gdb",
@@ -21,35 +21,15 @@
             ]
         },
         {
-            "name": "Struct Updates (gdb)",
+            "name": "BBS",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/struct_updates",
-            "args": [],
-            "stopAtEntry": false,
-            "cwd": "${workspaceFolder}",
-            "environment": [],
-            "externalConsole": false,
-            "MIMode": "gdb",
-            "preLaunchTask": "Build struct_updates",
-            "setupCommands": [
-                {
-                    "description": "Enable pretty-printing for gdb",
-                    "text": "-enable-pretty-printing",
-                    "ignoreFailures": true
-                }
-            ]
-        },
-        {
-            "name": "BBS (x64)",
-            "type": "cppdbg",
-            "request": "launch",
-            "program": "${workspaceFolder}/bin/bbs_x64",
+            "program": "${workspaceFolder}/bin/bbs",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [{
-                "name": "BBSNAME", "value": "Dredd"
+                "name": "BBSNAME", "value": "KAM"
             }],
             "externalConsole": false,
             "MIMode": "gdb",
@@ -73,17 +53,5 @@
             "MIMode": "gdb",
             "preLaunchTask": "Build send_x_cmd",
         },
-        {
-            "name": "mmap_test",
-            "type": "cppdbg",
-            "request": "launch",
-            "program": "${workspaceFolder}/mmap_test",
-            "args": [],
-            "stopAtEntry": false,
-            "cwd": "${workspaceFolder}",
-            "environment": [],
-            "externalConsole": false,
-            "MIMode": "gdb",
-        }
     ]
 }

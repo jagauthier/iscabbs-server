@@ -1,4 +1,4 @@
 #!/bin/sh
-cp -r convert_output/data/* ../data_x64
-cp -r convert_output/message/* ../message_x64
+cp -r convert_output/data/* ../data
+cp -r convert_output/message/* ../message
 
