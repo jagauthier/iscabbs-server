@@ -149,13 +149,15 @@ bool findroom(void) {
  * User chooses this option (Z key) to unsubscribe to the current room.
  **********************************************************************/
 bool forgetroom(void) {
-  if (curr < AIDE_RM_NBR) {
+  if (curr < DELMSG_RM_NBR) {
     my_printf("You can't forget this forum.\n");
     return (FALSE);
   }
 
   my_printf("Are you sure you want to forget this forum? ");
-  if (!yesno(-1)) return (FALSE);
+  if (!yesno(-1)) {
+    return (FALSE);
+  }
 
   locks(SEM_USER);
   ouruser->forget[curr] = msg->room[curr].gen; /* zap */
@@ -255,7 +257,7 @@ bool nextroom(void) {
           ouruser->generation[i] != RODSERLING) ||
          ouruser->f_prog || (msg->room[i].gen == ouruser->generation[i])) &&
         !(skipping[i >> 3] & 1 << (i & 7)) &&
-        ((i != AIDE_RM_NBR) || ouruser->f_admin)) {
+        ((i != YELLS_RM_NBR) || ouruser->f_admin)) {
       curr = i;
       return (YES);
     }
@@ -338,7 +340,7 @@ void readroom(int cit_cmd) {
      * new, respectively.  The logic is: under what conditions should I skip to
      * the next message?
      */
-    
+
     if (room->num[rm_msg_nbr] == 0L) {
       rm_msg_nbr += dir;
       continue;
@@ -368,21 +370,21 @@ void readroom(int cit_cmd) {
         continue;
       }
     }
-/*
-    if ((room->num[rm_msg_nbr] == 0L) ||
-        ((cit_cmd == 'N') && (ouruser->f_lastold) &&
-         (room->num[rm_msg_nbr] < ouruser->lastseen[curr])) ||
+    /*
+        if ((room->num[rm_msg_nbr] == 0L) ||
+            ((cit_cmd == 'N') && (ouruser->f_lastold) &&
+             (room->num[rm_msg_nbr] < ouruser->lastseen[curr])) ||
 
-        ((cit_cmd == 'N') && !(ouruser->f_lastold) &&
-         (room->num[rm_msg_nbr] <= ouruser->lastseen[curr])) ||
+            ((cit_cmd == 'N') && !(ouruser->f_lastold) &&
+             (room->num[rm_msg_nbr] <= ouruser->lastseen[curr])) ||
 
-        ((cit_cmd == 'O') &&
-         (room->num[rm_msg_nbr] > ouruser->lastseen[curr])) ||
-        ((cit_cmd == '#') && (room->chron[rm_msg_nbr] < searchkey))) {
-      rm_msg_nbr += dir;
-      continue;
-    }
-*/
+            ((cit_cmd == 'O') &&
+             (room->num[rm_msg_nbr] > ouruser->lastseen[curr])) ||
+            ((cit_cmd == '#') && (room->chron[rm_msg_nbr] < searchkey))) {
+          rm_msg_nbr += dir;
+          continue;
+        }
+    */
     /* after reading a message, *auth should be set for use at prompt
      */
     /* name returns with name of note's author in it */
@@ -555,9 +557,9 @@ void readroom(int cit_cmd) {
 
         case 'r':
         case 'R':
-          if (curr == MAIL_RM_NBR || curr == AIDE_RM_NBR) {
+          if (curr == MAIL_RM_NBR || curr == YELLS_RM_NBR) {
 #if 0
-            if (curr != MAIL_RM_NBR && curr != AIDE_RM_NBR && ouruser->f_admin && ouruser->usernum != msg->room[curr].roomaide)
+            if (curr != MAIL_RM_NBR && curr != YELLS_RM_NBR && ouruser->f_admin && ouruser->usernum != msg->room[curr].roomaide)
             {
                reply to anon note?
             }
@@ -566,21 +568,21 @@ void readroom(int cit_cmd) {
               my_printf("\n\nCan't reply to yourself!\n\n");
               break;
             }
-            sysopflags |= curr == AIDE_RM_NBR ? SYSOP_FROM_SYSOP : 0;
+            sysopflags |= curr == YELLS_RM_NBR ? SYSOP_FROM_SYSOP : 0;
             my_printf("Reply\n");
             if (!*name) {
               my_putchar('\n');
             } else if (sysopflags & SYSOP_MSG) {
               sysopflags |= SYSOP_FROM_USER;
             }
-            if (!entermessage(curr, name, chr == 'R' && curr == AIDE_RM_NBR)) {
+            if (!entermessage(curr, name, chr == 'R' && curr == YELLS_RM_NBR)) {
               my_putchar('\n');
               sysopflags &= ~(SYSOP_FROM_USER | SYSOP_FROM_SYSOP);
               break;
             } else {
               rm_msg_nbr = resetpos(savedid);
               sysopflags &= ~(SYSOP_FROM_USER | SYSOP_FROM_SYSOP);
-              if (curr != AIDE_RM_NBR) {
+              if (curr != YELLS_RM_NBR) {
                 break;
               }
             }

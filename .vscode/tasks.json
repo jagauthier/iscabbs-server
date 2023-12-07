@@ -2,10 +2,10 @@
     "tasks": [
         {
             "type": "cppbuild",
-            "label": "Build struct_updates",
+            "label": "Build room_shuffle",
             "command": "/home/bbs/src/build",
             "args": [   
-                "struct_updates",
+                "room_shuffle",
             ],
             "options": {
                 "cwd": "${workspaceFolder}"

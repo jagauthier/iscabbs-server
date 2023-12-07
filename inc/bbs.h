@@ -37,7 +37,6 @@
 #define LIMITS      ROOT"etc/limits"	/* login limits for the BBS */
 #define LOCKOUT     ROOT"etc/lockout"	/* Sites that are locked out */
 #define LOGFILE     ROOT"etc/log"	/* System log                */
-#ifdef X86
 #define DESCDIR     ROOT"message/desc/" /* location of room info files */
 #define MESSAGE     ROOT"message/"	/* Message directory     */
 #define MSGDATA     ROOT"data/msgdata"	/* Message system (non temp) data */
@@ -45,16 +44,6 @@
 #define TMPDATA     ROOT"data/tmpdata"	/* Temp data (not saved to disk) */
 #define USERDATA    ROOT"data/userdata"	/* User index/data */
 #define XMSGDATA    ROOT"data/xmsgdata" /* X message data file */
-#else
-#define DESCDIR     ROOT"message_x64/desc/" /* location of room info files */
-#define MESSAGE     ROOT"message_x64/"	/* Message directory     */
-#define MSGDATA     ROOT"data_x64/msgdata"	/* Message system (non temp) data */
-#define MSGMAIN     ROOT"message_x64/msgmain"/* Main message file */
-#define TMPDATA     ROOT"data_x64/tmpdata"	/* Temp data (not saved to disk) */
-#define USERDATA    ROOT"data_x64/userdata"	/* User index/data */
-#define XMSGDATA    ROOT"data_x64/xmsgdata" /* X message data file */
-#endif
-
 #define MOTD	    ROOT"etc/motd"	/* Message of the day */
 #define VOTEFILE    ROOT"etc/votedata"	/* Voting info */
 #define WHODIR      ROOT"etc/who/"	/* who knows rooms directory */
@@ -63,9 +52,10 @@
 
 /* Miscellaneous Defs */
 
-#define ABORT                   2
-#define AIDE_RM_NBR		2
+#define ABORT           2
+#define YELLS_RM_NBR		2
 #define SYSOP_RM_NBR		6
+#define DELMSG_RM_NBR		3
 #define BACKWARD		(-1)
 #define BEL                     7	/* control-g (bell) */
 #define BS			'\b'	/* back space */
@@ -411,7 +401,7 @@ struct mheader
   uint32_t poster;
   bool deleted;
   uint32_t deleted_by;
-  char deleted_by_name[MAXALIAS + 1];
+  char deleted_name[MAXALIAS + 1];
   bool quotedx;
   bool mail;
   bool approval;
@@ -423,7 +413,8 @@ struct mheader
   time_t ptime;
   /* 128 bytes that can be used in the future to reduce 
   conversion updates */
-  uint8_t future_use[128];
+  char poster_name[MAXALIAS + 1];
+  uint8_t future_use[108];
   union
   {
     struct

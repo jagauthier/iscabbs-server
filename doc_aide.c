@@ -306,7 +306,7 @@ static void createroom(void) {
 static void deleteroom(void) {
   char confirm[7];
 
-  if (curr <= AIDE_RM_NBR) {
+  if (curr <= DELMSG_RM_NBR) {
     my_printf("Can't kill this forum.\n");
     return;
   }
@@ -455,7 +455,7 @@ static void editroom(void) {
   uint8_t flags;
   int8_t gen;
 
-  if (curr <= AIDE_RM_NBR && !ouruser->f_admin) {
+  if (curr <= DELMSG_RM_NBR && !ouruser->f_admin) {
     my_printf("Only programmers can edit Lobby, Mail, or Aide forums!\n");
     return;
   }

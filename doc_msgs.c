@@ -91,7 +91,7 @@ int entermessage(int32_t troom, const char *recipient, int8_t upload) {
 
   /* If this is email (in Mail>) we need a recipient */
   /* If <R>eply was called, recipient should already be set */
-  if (((curr_rm == MAIL_RM_NBR || curr_rm == AIDE_RM_NBR) &&
+  if (((curr_rm == MAIL_RM_NBR || curr_rm == YELLS_RM_NBR) &&
        (*recipient || curr_rm == MAIL_RM_NBR)) ||
       upload < 0) {
     if (upload < 0) {
@@ -121,7 +121,7 @@ int entermessage(int32_t troom, const char *recipient, int8_t upload) {
       return (FALSE);
     }
 
-    if (curr_rm == AIDE_RM_NBR) {
+    if (curr_rm == YELLS_RM_NBR) {
       curr_rm = MAIL_RM_NBR;
     }
   } /* end if mailroom (recipient analysis) */
@@ -176,7 +176,7 @@ int entermessage(int32_t troom, const char *recipient, int8_t upload) {
 
   if (curr_rm < 0 || upload < 0) {
     tosysop = TRUE;
-    curr_rm = AIDE_RM_NBR;
+    curr_rm = YELLS_RM_NBR;
   }
   if (upload < 0) {
     mtype = MES_XYELL;
@@ -282,7 +282,9 @@ int entermessage(int32_t troom, const char *recipient, int8_t upload) {
   } else if (mtype == MES_SYSOP || mtype == MES_FM) {
     fr_post(SYSOP_RM_NBR, ++msg->room[SYSOP_RM_NBR].posted, mmpos, mmhi,
             tmpuser);
-    if (curr == AIDE_RM_NBR) ouruser->yells++;
+    if (curr == YELLS_RM_NBR) {
+      ouruser->yells++;
+    }
   }
 
   unlocks(SEM_MSG);
@@ -417,7 +419,7 @@ static int32_t newreadmessage(
       strcpy(profile_default, name);
     }
     if ((mh->mtype != MES_ANON && mh->mtype != MES_AN2) ||
-        curr == AIDE_RM_NBR) {
+        curr == YELLS_RM_NBR) {
       if (mh->mtype == MES_SYSOP) {
         sysopflags |= SYSOP_MSG;
       }
@@ -455,7 +457,7 @@ static int32_t newreadmessage(
   }
 
   if (curr != MAIL_RM_NBR && mh->mtype != MES_DESC && curr != mh->forum &&
-      curr != AIDE_RM_NBR) {
+      curr != YELLS_RM_NBR) {
     title = my_sprintf(title, "@G in @Y%s>", msg->room[mh->forum].name);
   }
 

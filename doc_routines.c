@@ -24,7 +24,7 @@ int countmsgs(void) {
       }
     }
   }
-
+ 
   if (new > 0) {
     colorize("@Y[%s]  @C%d @Gmessages,@C %d @Gnew\n", msg->room[curr].name,
              count, new);
@@ -71,7 +71,7 @@ void knrooms(struct user *tmpuser) {
     if (rm_nbr != MAIL_RM_NBR) {
       if ((msg->room[rm_nbr].flags & QR_INUSE) &&
           (msg->room[rm_nbr].highest > tmpuser->lastseen[rm_nbr]) &&
-          ((rm_nbr != AIDE_RM_NBR) || tmpuser->f_admin) &&
+          ((rm_nbr != YELLS_RM_NBR) || tmpuser->f_admin) &&
           (msg->room[rm_nbr].gen != tmpuser->forget[rm_nbr]) &&
           (tmpuser->generation[rm_nbr] != RODSERLING) &&
           (tmpuser->forget[rm_nbr] != NEWUSERFORGET) &&
@@ -120,7 +120,7 @@ void knrooms(struct user *tmpuser) {
     if (rm_nbr != MAIL_RM_NBR) {
       if ((msg->room[rm_nbr].flags & QR_INUSE) &&
           (msg->room[rm_nbr].highest <= tmpuser->lastseen[rm_nbr]) &&
-          ((rm_nbr != AIDE_RM_NBR) || tmpuser->f_admin) &&
+          ((rm_nbr != YELLS_RM_NBR) || tmpuser->f_admin) &&
           (msg->room[rm_nbr].gen != tmpuser->forget[rm_nbr]) &&
           (tmpuser->generation[rm_nbr] != RODSERLING) &&
           (tmpuser->forget[rm_nbr] != NEWUSERFORGET) &&
@@ -167,7 +167,7 @@ void knrooms(struct user *tmpuser) {
         ((msg->room[rm_nbr].gen == tmpuser->forget[rm_nbr]) /* zapped */
          || (tmpuser->forget[rm_nbr] == NEWUSERFORGET) ||
          (tmpuser->generation[rm_nbr] == RODSERLING)) &&
-        ((rm_nbr != AIDE_RM_NBR) || tmpuser->f_admin) &&
+        ((rm_nbr != YELLS_RM_NBR) || tmpuser->f_admin) &&
         (((msg->room[rm_nbr].flags & QR_PRIVATE) == NO) || tmpuser->f_prog ||
          (msg->room[rm_nbr].gen == tmpuser->generation[rm_nbr]))) {
       checked_snprintf(tmpstr, sizeof(tmpstr), " %d\056%s>  ", rm_nbr,
