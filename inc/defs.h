@@ -92,7 +92,7 @@
 #define MAP_FILE 0
 #endif
 
-#define VERSION "ISCA BBS v0.16 (DOC Version 1.7)"
+#define VERSION "ISCA BBS v0.19 (DOC Version 1.7)"
 
 /* define this to allow the bbs to logout users after n minutes */
 #define IDLELOGOUT	1440

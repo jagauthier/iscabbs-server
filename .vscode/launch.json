@@ -12,13 +12,6 @@
             "externalConsole": false,
             "MIMode": "gdb",
             "preLaunchTask": "Build room_shuffle",
-            "setupCommands": [
-                {
-                    "description": "Enable pretty-printing for gdb",
-                    "text": "-enable-pretty-printing",
-                    "ignoreFailures": true
-                }
-            ]
         },
         {
             "name": "BBS",
@@ -29,7 +22,7 @@
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [{
-                "name": "BBSNAME", "value": "KAM"
+                "name": "BBSNAME", "value": "Kena"
             }],
             "externalConsole": false,
             "MIMode": "gdb",
@@ -52,6 +45,19 @@
             "externalConsole": false,
             "MIMode": "gdb",
             "preLaunchTask": "Build send_x_cmd",
+        },
+        {
+            "name": "room_analysis",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/room_analysis",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "preLaunchTask": "Build room_analysis",
         },
     ]
 }

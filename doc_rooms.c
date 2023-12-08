@@ -315,6 +315,7 @@ void readroom(int cit_cmd) {
   bool readingnew;
   int32_t savedid;
   int savedrows = -1;
+  struct mheader *mh;
 
   auth = &dummy;
   alt = FALSE;
@@ -405,7 +406,7 @@ void readroom(int cit_cmd) {
     }
 
     if (error == MNFERR || error == FMTERR) {
-      deletemessage(room->num[rm_msg_nbr], TRUE);
+      deletemessage(room->num[rm_msg_nbr], -1, TRUE);
       room->highest = room->num[MSGSPERRM - 1];
       rm_msg_nbr = resetpos(savedid);
       if (dir != FORWARD) {
@@ -597,11 +598,19 @@ void readroom(int cit_cmd) {
           /* fall through if note successfully post in aide room */
           /* fall through */
         case 'D':
-          if (chr == 'D') {
-            my_putchar('\n');
+          my_putchar('\n');
+          mh = (struct mheader *)(msgstart + room->pos[rm_msg_nbr]);
+          if (mh->deleted) {
+            colorize("@RNo, we're not doing that.\n");
+            break;
           }
+
           for (;;) {
-            my_printf("\nDelete post.  Are you sure (Y/N)? -> ");
+            if (curr == DELMSG_RM_NBR) {
+              my_printf("You realize how stupid this is? (Y/N)? -> ");
+            } else {
+              my_printf("\nDelete post.  Are you sure (Y/N)? -> ");
+            }
             chr = get_single_quiet("YyNn");
             if (chr == 'y') {
               my_printf(" (Hit shift-Y to acknowledge deletion)");
@@ -611,7 +620,7 @@ void readroom(int cit_cmd) {
           }
           if (chr == 'Y') {
             my_printf("Yes\n");
-            deletemessage(room->num[rm_msg_nbr], FALSE);
+            deletemessage(room->num[rm_msg_nbr], room->pos[rm_msg_nbr], FALSE);
             room->highest = room->num[MSGSPERRM - 1];
             rm_msg_nbr = resetpos(savedid);
             if (dir != FORWARD) {

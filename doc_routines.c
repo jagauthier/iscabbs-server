@@ -1,9 +1,10 @@
 /*
  * doc_routines.c - General message system code.
  */
+#include <stdio_ext.h>
+
 #include "defs.h"
 #include "ext.h"
-#include <stdio_ext.h>
 
 /**********************************************************************
  * countmsgs
@@ -24,7 +25,7 @@ int countmsgs(void) {
       }
     }
   }
- 
+
   if (new > 0) {
     colorize("@Y[%s]  @C%d @Gmessages,@C %d @Gnew\n", msg->room[curr].name,
              count, new);
@@ -354,9 +355,10 @@ void flush_input(int sec) {
  *  long delnum - the msg # to delete
  *  struct fullrm *fullrm - the new updated fullrm (out)
  *********************************************************************/
-void fr_delete(long delnum) {
+void fr_delete(int32_t delnum, int32_t pos) {
   int16_t i;
-
+  struct mheader *mh;
+  struct user *user;
   if (curr == MAIL_RM_NBR) {
     /*
      * We only delete mail from our personal mailbox....just like regular US
@@ -380,6 +382,32 @@ void fr_delete(long delnum) {
       ouruser->mr[0].num = ouruser->mr[0].pos = 0L;
     }
   } else {
+    /* set up the parameters to copy a deleted message */
+    if (pos >= 0) {
+      mh = (struct mheader *)(msgstart + pos);
+      user = finduser(NULL, mh->poster, 0);
+
+      if (mh->magic != M_MAGIC) {
+        my_printf("No magic when deleting");
+      }
+      // Have to increase the highest value in order for it to be shown as new.
+      mh->msgid = ++msg->highest;
+      mh->deleted = true;
+      mh->deleted_by_num = ouruser->usernum;
+      mh->del_room_num = curr;
+      mh->dtime = time(0);
+      mh->mtype = MES_NORMAL;
+      strcpy(mh->deleted_by_name, ouruser->name);
+      if (user && mh->poster_name[0]==0) {
+        strcpy(mh->poster_name, user->name);
+      } else {
+        strcpy(mh->poster_name, "<Deleted User>");
+      }
+      strcpy(mh->del_room_name, msg->room[curr].name);
+      fr_post(DELMSG_RM_NBR, ++msg->room[DELMSG_RM_NBR].posted, pos, mh->msgid,
+              NULL);
+    }
+
     i = curr == MAIL_RM_NBR ? MAILMSGS - 1 : MSGSPERRM - 1;
     for (i = MSGSPERRM - 1; msg->room[curr].num[i] != delnum && i >= 0; --i)
       ;
@@ -705,9 +733,9 @@ char *mystrstr_nonconst(char *haystack, const char *needle) {
   return (char *)mystrstr(haystack, needle);
 }
 
-void bcdplus1encode(long number) {
+void bcdplus1encode(int32_t number) {
   char digit;
-  long remainder;
+  int32_t remainder;
 
   if (number < 0) {
     return;

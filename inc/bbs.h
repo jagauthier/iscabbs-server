@@ -400,8 +400,8 @@ struct mheader
   uint8_t magic;
   uint32_t poster;
   bool deleted;
-  uint32_t deleted_by;
-  char deleted_name[MAXALIAS + 1];
+  uint32_t deleted_by_num;
+  char deleted_by_name[MAXALIAS + 1];
   bool quotedx;
   bool mail;
   bool approval;
@@ -414,7 +414,10 @@ struct mheader
   /* 128 bytes that can be used in the future to reduce 
   conversion updates */
   char poster_name[MAXALIAS + 1];
-  uint8_t future_use[108];
+  char del_room_name[MAXNAME +1];
+  uint8_t del_room_num;
+  time_t dtime;
+  uint8_t future_use[58];
   union
   {
     struct

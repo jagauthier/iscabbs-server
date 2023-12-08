@@ -4,7 +4,9 @@
 static void myecho(int mode);
 
 static void s_sigdie() {
-  if (tty) signal(SIGHUP, (void *)s_sigdie);
+  if (tty) {
+    signal(SIGHUP, (void *)s_sigdie);
+  }
   signal(SIGPIPE, (void *)s_sigdie);
   signal(SIGTERM, (void *)s_sigdie);
   if (f_death > -2) {
@@ -13,16 +15,22 @@ static void s_sigdie() {
 }
 
 static void s_sigquit() {
-  if (!tty) signal(SIGHUP, (void *)s_sigquit);
+  if (!tty) {
+    signal(SIGHUP, (void *)s_sigquit);
+  }
   signal(SIGQUIT, (void *)s_sigquit);
-  if (!f_death) f_death = 1;
+  if (!f_death) {
+    f_death = 1;
+  }
 
   // errlog ("SIGQUIT while lock on %d", lockflags);
 }
 
 static void s_sigio(void) {
   /* Force-check */
-  if (XPENDING) checkx(1);
+  if (XPENDING) {
+    checkx(1);
+  }
 
   signal(SIGIO, (void *)s_sigio);
 }
@@ -155,21 +163,25 @@ void init_system(void) {
   if ((lockoutp = p = mmap_file(LOCKOUT, &size))) {
     strncpy(myhost, gethost(), sizeof(myhost) - 1);
     for (hp = myhost; *hp; hp++)
-      if (*hp >= 'A' && *hp <= 'Z') *hp += 32;
+      if (*hp >= 'A' && *hp <= 'Z') {
+        *hp += 32;
+      }
     while ((size_t)(p - lockoutp) < size) {
-      for (i = 0; (size_t)(p - lockoutp) < size && *p != '\n'; i++, p++)
+      for (i = 0; (size_t)(p - lockoutp) < size && *p != '\n'; i++, p++) {
         host[i] = *p;
+      }
       host[i] = 0;
       p++;
       if (*host && *host != '#' && host[strlen(host) - 2] == ' ') {
         howbad = host[strlen(host) - 1] - '0' + 1;
         host[strlen(host) - 2] = 0;
-        for (hp = host; *hp; hp++)
+        for (hp = host; *hp; hp++) {
           if (*hp >= 'A' && *hp <= 'Z') *hp += 32;
+        }
         hp = (char *)strchr(host, '*');
         if ((hp && !strncmp(host, myhost, (int)(hp - host)) && hp++ &&
              !strcmp(hp, myhost + strlen(myhost) - strlen(hp))) ||
-            (!hp && !strcmp(host, myhost)))
+            (!hp && !strcmp(host, myhost))) {
           if ((nonew = howbad) == 1) {
             my_printf(
                 "\n\nThe site you are connecting from has been locked out of "
@@ -177,6 +189,7 @@ void init_system(void) {
                 "marxmarv@getoffthe.net.\n\n\n");
             my_exit(10);
           }
+        }
       }
     }
     munmap((void *)lockoutp, size);
@@ -214,16 +227,18 @@ void my_exit(int doflush) {
   }
 
   f_alarm = 0;
-  if (doflush)
+  if (doflush) {
     f_death = -1;
-  else
+  } else {
     f_death = -2;
+  }
   alarm(120);
 
   if (mybtmp) mybtmp->nox = -1;
 
-  if (save == 1 && doflush)
+  if (save == 1 && doflush) {
     my_printf("\a\n\n\n\n\nYou have been logged off.\n\n\n\n\n");
+  }
 
   if (ouruser) {
     int f;
@@ -232,8 +247,10 @@ void my_exit(int doflush) {
     if (doflush) checkx(-1);
 
     locks(SEM_USER);
-    if (ouruser->btmpindex >= 0 && mybtmp == &bigbtmp->btmp[ouruser->btmpindex])
+    if (ouruser->btmpindex >= 0 &&
+        mybtmp == &bigbtmp->btmp[ouruser->btmpindex]) {
       ouruser->btmpindex = -1;
+    }
     unlocks(SEM_USER);
     ouruser->timeoff = msg->t = time(0);
     ouruser->timetot = ouruser->timetot + ouruser->timeoff - ouruser->time;
@@ -259,14 +276,16 @@ void my_exit(int doflush) {
   }
 
   if (doflush) {
-    if (ansi) my_printf("\033[0m");
+    if (ansi) {
+      my_printf("\033[0m");
+    }
     fflush(stdout);
     if (doflush > 1) {
       bbs_sleep(doflush);
     }
-    if (tty)
+    if (tty) {
       myecho(ON);
-    else {
+    } else {
       int fdr = 1;
       struct timeval tv = {30, 0};
 
@@ -286,16 +305,18 @@ static void myecho(int mode) {
   struct termios term;
 
   tcgetattr(1, &term);
-  if (!saveterm.c_lflag && !saveterm.c_iflag)
+  if (!saveterm.c_lflag && !saveterm.c_iflag) {
     memcpy((char *)&saveterm, (const char *)&term, sizeof(struct termios));
+  }
 
   if (!mode) {
     term.c_lflag &= ~(ICANON | ECHO | ECHOK | ECHOE | ECHONL | ISIG);
     term.c_iflag |= IXOFF;
     term.c_cc[VMIN] = 1;
     term.c_cc[VTIME] = 0;
-  } else
+  } else {
     memcpy((char *)&term, (const char *)&saveterm, sizeof(struct termios));
+  }
 
   tcsetattr(1, TCSANOW, &term);
 }
@@ -313,37 +334,52 @@ int inkey(void) {
 
   while (i > DEL) {
     if (!tty) {
-      if ((i = telrcv(&noflush)) < 0) my_exit(0);
-      if (block)
+      if ((i = telrcv(&noflush)) < 0) {
+        my_exit(0);
+      }
+      if (block) {
         i = 257;
-      else if (i != 17)
+      } else if (i != 17) {
         byte++;
+      }
     } else if (!INPUT_LEFT()) {
       if (noflush) {
         fflush(stdout);
         noflush = 0;
       }
       do {
-        if (f_alarm) alarmclock();
-        if (f_death) my_exit(5);
-        if (XPENDING) checkx(1);
+        if (f_alarm) {
+          alarmclock();
+        }
+        if (f_death) {
+          my_exit(5);
+        }
+        if (XPENDING) {
+          checkx(1);
+        }
       } while ((i = getchar()) < 0 && errno == EINTR);
 
-      if (i < 0) my_exit(0);
-    } else
+      if (i < 0) {
+        my_exit(0);
+      }
+    } else {
       i = getchar();
-    if (lastcr && i == '\n' && !client) i = 255;
+    }
+    if (lastcr && i == '\n' && !client) {
+      i = 255;
+    }
     lastcr = 0;
   }
 
   /* Change a couple values to the C/Unix standard */
-  if (i == DEL)
+  if (i == DEL) {
     i = BS;
-  else if (i == '\r') {
+  } else if (i == '\r') {
     i = '\n';
     lastcr = 1;
-  } else if (i == CTRL_U)
+  } else if (i == CTRL_U) {
     i = CTRL_X;
+  }
 
   /* reset the sleep time *after* they type a letter, not after the command
    is executed */
@@ -382,9 +418,9 @@ void get_new_string(const char *prompt, int length, char *result, int line,
   int invalid = 0;
 
   my_printf("%s", prompt);
-  if (line <= 0)
+  if (line <= 0) {
     *wrap = 0;
-  else if (*wrap) {
+  } else if (*wrap) {
     my_printf("%s", wrap);
     strcpy(result, wrap);
     p = result + strlen(wrap);
@@ -402,39 +438,56 @@ void get_new_string(const char *prompt, int length, char *result, int line,
   }
 
   hidden = 0;
-  if (length < 0) hidden = length = 0 - length;
+  if (length < 0) {
+    hidden = length = 0 - length;
+  }
   for (;;) {
     c = inkey();
-    if (c == ' ' && length == 29 && p == result) break;
-    if (c == '\n') break;
+    if (c == ' ' && length == 29 && p == result) {
+      break;
+    }
+    if (c == '\n') {
+      break;
+    }
 
     if (c < SP && c != BS && c != CTRL_X && c != CTRL_W && c != CTRL_R) {
-      if (invalid++) flush_input(invalid < 6 ? (invalid / 2) : 3);
+      if (invalid++) {
+        flush_input(invalid < 6 ? (invalid / 2) : 3);
+      }
       continue;
-    } else
+    } else {
       invalid = 0;
+    }
 
     if (c == CTRL_R) {
       *p = 0;
-      if (!hidden) my_printf("\n%s", result);
+      if (!hidden) {
+        my_printf("\n%s", result);
+      }
       continue;
     }
 
-    if (c == BS || c == CTRL_X)
-      if (p == result)
+    if (c == BS || c == CTRL_X) {
+      if (p == result) {
         continue;
-      else
+      } else {
         do {
           my_putchar(BS);
           my_putchar(SP);
           my_putchar(BS);
           --p;
         } while (c == 24 && p > result);
-    else if (c == CTRL_W) {
-      for (q = result; q < p; q++)
-        if (*q != ' ') break;
+      }
+    } else if (c == CTRL_W) {
+      for (q = result; q < p; q++) {
+        if (*q != ' ') {
+          break;
+        }
+      }
       for (c = q == p; p > result && (!c || p[-1] != ' '); p--) {
-        if (p[-1] != ' ') c = 1;
+        if (p[-1] != ' ') {
+          c = 1;
+        }
         my_putchar(BS);
         my_putchar(SP);
         my_putchar(BS);
@@ -442,15 +495,18 @@ void get_new_string(const char *prompt, int length, char *result, int line,
     } else if (p < result + length && c >= SP) {
       *p++ = c;
       if (!client) {
-        if (!hidden)
+        if (!hidden) {
           my_putchar(c);
-        else
+        } else {
           my_putchar('.');
+        }
       }
-    } else if (c < SP || line < 0 || line == limit - 1)
+    } else if (c < SP || line < 0 || line == limit - 1) {
       continue;
-    else {
-      if (c == ' ') break;
+    } else {
+      if (c == ' ') {
+        break;
+      }
       for (q = p - 1; *q != ' ' && q > result; q--)
         ;
       if (q > result) {
@@ -471,7 +527,9 @@ void get_new_string(const char *prompt, int length, char *result, int line,
     }
   }
   *p = '\0';
-  if (!client) my_putchar('\n');
+  if (!client) {
+    my_putchar('\n');
+  }
 }
 
 int get_single_quiet(const char *valid_string) {
@@ -481,14 +539,20 @@ int get_single_quiet(const char *valid_string) {
   for (;;) {
     c = inkey();
     /* First check it in the case given */
-    if (index(valid_string, c)) break;
+    if (index(valid_string, c)) {
+      break;
+    }
     /* If not, if we're lower case, try upper case */
     if (c >= 'a' && c <= 'z') {
       c -= 32;
-      if (index(valid_string, c)) break;
+      if (index(valid_string, c)) {
+        break;
+      }
     }
     /* It is an invalid character... */
-    if (invalid++) flush_input(invalid < 6 ? (invalid / 2) : 3);
+    if (invalid++) {
+      flush_input(invalid < 6 ? (invalid / 2) : 3);
+    }
   }
   return (c);
 }
