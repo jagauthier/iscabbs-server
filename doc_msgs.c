@@ -12,9 +12,9 @@
  * reads the files and updates them itself.
  * Adjusted for FRchron on 4-23-91 -dn
  ****************************************************************************/
-void deletemessage(long delnum, int quiet) {
+void deletemessage(int32_t delnum, int32_t pos, bool quiet) {
   locks(SEM_MSG);
-  fr_delete(delnum);
+  fr_delete(delnum, pos);
   msg->room[curr].highest = msg->room[curr].num[MSGSPERRM - 1];
   unlocks(SEM_MSG);
   if (!quiet) {
@@ -333,6 +333,7 @@ static int32_t newreadmessage(
 {
   bool show = TRUE;
   char *title = NULL;
+  struct user *user;
 
   struct mheader *mh = (struct mheader *)(void *)p;
 
@@ -377,23 +378,26 @@ static int32_t newreadmessage(
   // mh->year, mh->hour, mh->minute);
 
   char *name = getusername(mh->poster, 1);
+
+  // update the name of the poster too
+  if (!mh->deleted) {
+    if (name && mh->poster_name[0] == 0) {
+      strcpy(mh->poster_name, name);
+    }
+  }
+
+  /* This shows the room description */
   if (mh->mtype == MES_DESC) {
     title = my_sprintf(title, "@G by @C%s", name);
 
-    // neuro edit
-    // don't fucking ask me how half this shit works, it appears the forum info
-    // gets rewritten every time somebody reads it (?!) but this works once
-    // every user is logged in with the right bbs binary
     if (msg->room[curr].roomaide) {
       name = getusername(msg->room[curr].roomaide, 0);
       if (!name) {
         name = "Sysop";
       }
-
     } else {
       name = "(Sysop)";
     }
-    // end neuro edit
     strcpy(aname, name);
     colorize(
         "@G\nForum moderator is @C%s@G.  Total messages:@R %i\n@GForum info "
@@ -401,6 +405,7 @@ static int32_t newreadmessage(
         name, msg->room[curr].posted);
 
     title = my_sprintf(title, "\n");
+    /* now on to regular posts */
   } else {
     if (ouruser->usernum == mh->poster) {
       if (new && !ouruser->f_ownnew) {
@@ -423,13 +428,51 @@ static int32_t newreadmessage(
       if (mh->mtype == MES_SYSOP) {
         sysopflags |= SYSOP_MSG;
       }
-      title = my_sprintf(title, "@G from @C%s%s%s", name,
-                         mh->mtype == MES_FM ? " (Forum Moderator)" : "",
-                         (mh->mtype == MES_SYSOP &&
-                          (!mh->mail || ((*auth && ouruser->f_aide) ||
-                                         (!*auth && !ouruser->f_aide))))
-                             ? " (Sysop)"
-                             : "");
+      /* create a completely different string for deleted messages */
+      if (mh->deleted) {
+        char poster_color[3];
+        char delby_color[3];
+        char poster_name[MAXALIAS + 1];
+        user = finduser(0, mh->poster, 0);
+        if (user) {
+          strcpy(poster_color, "@C");
+          strcpy(poster_name, user->name);
+        } else {
+          strcpy(poster_color, "@R");
+          if (mh->poster_name[0] != 0) {
+            strcpy(poster_name, mh->poster_name);
+          } else {
+            strcpy(poster_name, "<Deleted User>");
+          }
+        }
+        user = finduser(mh->deleted_by_name, 0, 0);
+        if (user) {
+          strcpy(delby_color, "@C");
+        } else {
+          strcpy(delby_color, "@R");
+        }
+
+        title = my_sprintf(title, "@G from %s%s @Gdeleted by %s%s @Gon @M%s\n",
+                           poster_color, poster_name, delby_color,
+                           mh->deleted_by_name, formtime(2, mh->dtime));
+        title = my_sprintf(title, "@GRoom: @Y%s>@G",
+                           msg->room[mh->del_room_num].name);
+        /* room name changed - make note of it */
+        if (strcmp(msg->room[mh->del_room_num].name, mh->del_room_name)) {
+          title = my_sprintf(title, " Original: @Y%s>@G\n", mh->del_room_name);
+        }
+
+        /* [date] from [poster] [original] deleted by [name] on [date]
+        Room: [room name] - [now called] */
+      } else {
+        title = my_sprintf(title, "@G from @C%s%s%s", name,
+                           mh->mtype == MES_FM ? " (Forum Moderator)" : "",
+                           (mh->mtype == MES_SYSOP &&
+                            (!mh->mail || ((*auth && ouruser->f_aide) ||
+                                           (!*auth && !ouruser->f_aide))))
+                               ? " (Sysop)"
+                               : "");
+      }
     } else if (!*auth && !ouruser->f_prog &&
                ouruser->usernum != msg->room[curr].roomaide) {
       show = FALSE;
@@ -457,7 +500,7 @@ static int32_t newreadmessage(
   }
 
   if (curr != MAIL_RM_NBR && mh->mtype != MES_DESC && curr != mh->forum &&
-      curr != YELLS_RM_NBR) {
+      curr != YELLS_RM_NBR && curr != DELMSG_RM_NBR) {
     title = my_sprintf(title, "@G in @Y%s>", msg->room[mh->forum].name);
   }
 
@@ -546,6 +589,7 @@ int8_t makemessage(
   mh->magic = M_MAGIC;
   mh->mtype = mtype;
   mh->poster = ouruser->usernum;
+  strcpy(mh->poster_name, ouruser->name);
 
   time(&now);
   mh->ptime = now;

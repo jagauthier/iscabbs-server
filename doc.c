@@ -194,10 +194,6 @@ void bbsstart(void) {
     }
 
     switch (cit_cmd) {
-      case '+':
-        system("/home/bbs/bin/console.pl");
-        // debug();
-        break;
       case '!':
         my_printf("Block host\n");
         blockhost();
@@ -400,10 +396,6 @@ void bbsstart(void) {
       } break;
       case 't':
         printdate("Time\n\n%s");
-        break;
-
-      case 'T':
-        my_printf("OMG DEY CUT OFF MAH TWEETER!\n");
         break;
 
       case 'u':

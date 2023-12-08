@@ -243,7 +243,7 @@ struct user *getuser(const char *name) {
 
 /*
  * Returns pointer to string containing the username that matches the given
- * user number, or NULL if none found (If how == 1, "<Deleted user>" is passed
+ * user number, or NULL if none found (If how == 1, "<Deleted User>" is passed
  * instead of NULL)
  */
 char *getusername(const uint32_t num, const int how) {

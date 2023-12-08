@@ -3,7 +3,7 @@
         {
             "type": "cppbuild",
             "label": "Build room_shuffle",
-            "command": "/home/bbs/src/build",
+            "command": "make",
             "args": [   
                 "room_shuffle",
             ],
@@ -22,7 +22,7 @@
         {
             "type": "cppbuild",
             "label": "Build send_x_cmd",
-            "command": "/home/bbs/src/build",
+            "command": "make",
             "args": [   
                 "send_x_cmd",
             ],
@@ -40,10 +40,10 @@
         },
         {
             "type": "cppbuild",
-            "label": "Build convert",
-            "command": "/home/bbs/src/build",
+            "label": "Build room_analysis",
+            "command": "make",
             "args": [
-                "convert",
+                "room_analysis",
             ],
             "options": {
                 "cwd": "${workspaceFolder}"
@@ -60,7 +60,7 @@
         {
             "type": "cppbuild",
             "label": "Build BBS",
-            "command": "/home/bbs/src/build",
+            "command": "make",
             "args": [
                 "",
             ],

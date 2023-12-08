@@ -8,7 +8,7 @@ void dologout (void);
 
 void aide_menu (void);
 
-void deletemessage (long, int);
+void deletemessage (int32_t, int32_t, bool);
 int entermessage (int32_t, const char *, int8_t);
 int8_t makemessage (struct user *, uint8_t, int8_t);
 int readmessage (unsigned char *, bool *, char *, bool, uint32_t);
@@ -25,7 +25,7 @@ void debug (void);
 void knrooms (struct user *);
 int line_more (int16_t *, int16_t);
 void flush_input (int);
-void fr_delete (long);
+void fr_delete (int32_t, int32_t);
 void fr_post (uint8_t, int32_t, int32_t, int32_t, struct user *);
 void readdesc (void);
 void storeug (int32_t *, int32_t *);
@@ -145,7 +145,7 @@ int init (void);
 
 /* misc. */
 void askansi(void);
-void bcdplus1encode (long number);
+void bcdplus1encode (int32_t number);
 void change_beeps(void);
 void change_doing(void);
 void do_fortune(void);
