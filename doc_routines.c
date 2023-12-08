@@ -398,11 +398,7 @@ void fr_delete(int32_t delnum, int32_t pos) {
       mh->dtime = time(0);
       mh->mtype = MES_NORMAL;
       strcpy(mh->deleted_by_name, ouruser->name);
-      if (user && mh->poster_name[0]==0) {
-        strcpy(mh->poster_name, user->name);
-      } else {
-        strcpy(mh->poster_name, "<Deleted User>");
-      }
+
       strcpy(mh->del_room_name, msg->room[curr].name);
       fr_post(DELMSG_RM_NBR, ++msg->room[DELMSG_RM_NBR].posted, pos, mh->msgid,
               NULL);

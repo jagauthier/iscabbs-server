@@ -6,102 +6,6 @@
 static void blockhost(void);
 static void inituser(void);
 
-/*char fun_stuff[][80] = {
-        "IM IN UR LOBBY!! EATIN UR PROMPTZ!!!",
-        "Aliens are attacking, log off now.",
-        "YAY BABY JESUS!",
-        "MA PETITE FRENCH TOAST!!",
-        "I swallowed a bug.",
-        "You type like I drive.",
-        "Eat me, I'm a Danish.",
-        "Got too much time on your hands?  Answer today's poll in Polls>!",
-        "The Internet is being cleaned.  Please log off.",
-        "UNGH!!",
-        "Tisket!",
-        "You just lost The Game.",
-        "Do you have stairs in your house?",
-        "Shut up, Fitty.",
-        "My everything hurts! -Fibromyalgia Joe",
-        ".-( BOO, motherfucker!  I'm a dot! )",
-        "Here ya go, Shaq.  Go buy yo-self a bouncin' car!",
-        "{o,o} - ( HOOOOOOT! )",
-        "8=====D",
-        "({})",
-        "(.Y.)",
-        "BEW!BEW!BEW!",
-        "Inara BBS has a Literature> forum, for book discussion.",
-        "*poot*",
-        "If sick, dump tubing.",
-        "You are incorrect, as usual.",
-        "Joni Mitchell still sucks it.",
-        "Thanks for not peeing on my furniturez!",
-        "IM IN UR FRIDGE    EATIN UR FOODZ",
-        "Bleeding Me is made of matzoh and sand.",
-        "There is no spoon.",
-        "I can kill you with my brain.",
-        "I am a leaf on the wind.  Watch how I soar.",
-        "ZOMG!",
-        "Fat people are lonely...come talk to us in Chub Club>.",
-        "Mine is an evil laugh. Now DIE!",
-        "Forget your toothpaste?  *PUNCH*",
-        "All your prompt are belong to us.",
-        "Twofry...Nice hat.  *POP*",
-        "My food is problematic.",
-        "No power in the 'verse can stop me.",
-        "1+1=Lesbian",
-        "Is this Toledo?",
-        "Try the Weird>, it's delicious!",
-        "Computer trouble? Jump to Computer Geekery>.",
-        "WinAMP - it really whips the llama's ass.",
-        "Lord.",
-        "Go to Photography> to talk about photography!",
-        "Laughs",
-        "Inara Radio: http://www.inararadio.com/",
-        "What?",
-        "Goto",
-        "Somebody needs a nap.",
-        "Inara BBS: Now with 20% more JoJo",
-        "B'gawwwwwwk! ~:>",
-        "Got an idea for Inara BBS?  <j>ump to Ideas> and post it.",
-        "<insert gay Sysop joke>",
-        "*blank stare*",
-        "BINGO!",
-        ":)",
-        "Meat for President.",
-        "YES.  The plane takes off.",
-        "I don't get it.",
-        "Is everything okay at home?",
-        "Erin has a football head.",
-        "That's what SHE said!",
-        "What did you change?",
-        "You're so vain, you probably think this Goto is about you.",
-        "You just got knocked-up by Freef.",
-        "SHE HIT THE FLO (she hit the flo)",
-        "Be aware of your tongue.",
-        "Well, it was just *sitting* there...",
-        "*bzownt!*",
-        ":D",
-        "Whore!",
-        "Clearly, you suck at life.",
-        "Where da white wimmenz at?",
-        "This place is dying.  :(",
-        "Beans and franks!",
-        "I thought you people were supposed to be jolly?",
-        "Okay.",
-        "I will kill you with my teacup.",
-        "OMG PEANUTS!",
-        "Wait...what?",
-        "What an unfortunate image.",
-        "J1ZZBIB!",
-        "Looby>",
-        "Suck it? *waggles*",
-        "Shaka...when the walls fell.",
-        "Mandingo!",
-     "I like my ravioli hot. Hot like a motherfucker!"
-};
-int fun_len = sizeof(fun_stuff) / sizeof(char[80]);
-*/
-
 void bbsstart(void) {
   int32_t uglastmsg; /* last msg seen in prev. rm */
   int32_t ugtemp = TWILIGHTZONE;
@@ -198,10 +102,6 @@ void bbsstart(void) {
         my_printf("Block host\n");
         blockhost();
         break;
-        //      case '.':
-        //	system("/home/bbs/bin/dotmenu.sh");
-        // help("dotkey", NO);
-        //        break;
 
       case 'A':
         my_printf("Sysop commands %s\n", msg->room[curr].name);
@@ -336,11 +236,6 @@ void bbsstart(void) {
       case 'L':
         dologout();
         break;
-
-        // case 'M':
-        // system("/home/bbs/bin/iscawholist");
-        // more (ISCAWHO, 0);
-        // break;
 
       case 'N':
         if (!alt && (ouruser->f_clear)) {

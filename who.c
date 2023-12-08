@@ -128,6 +128,7 @@ void show_online(int8_t level) {
         if (btmp->elf && !btmp->xstat) {
           msg_status = '%';
         }
+
         if (pos == 3) {
           checked_snprintf(work, sizeof(work), "%c%s", msg_status, btmp->name);
         } else {
@@ -141,7 +142,9 @@ void show_online(int8_t level) {
         if (btmp->elf && !btmp->xstat) {
           msg_status = '%';
         }
-
+        if (btmp->sleeptimes > 5) {
+          msg_status = '#';
+        }
         colorize("@Y%-19s %c @R%2d:%02d ", btmp->name, msg_status, hour, min);
         // if (btmp->sleeptimes > 0)
         //{

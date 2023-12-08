@@ -111,7 +111,7 @@ setupbbs: $(SETUP_OBJECTS)
 convert: $(CONVERT_OBJECTS) $(ALL_BBS_OBJECTS) 
 	$(CC) $(CPPFLAGS) $(CFLAGS) -o $@ $^ $(LDFLAGS) $(LIBS)
 
-room_analysis: $(ALL_BBS_OBJECTS)  $(BUILDDIR)/room_analysis.o
+update_msg_poster: $(ALL_BBS_OBJECTS)  $(BUILDDIR)/update_msg_poster.o
 	$(CC) $(CPPFLAGS) $(CFLAGS) -o $@ $^ $(LDFLAGS) $(LIBS)
 
 bbs_utils: $(UTIL_OBJECTS) $(ALL_BBS_OBJECTS) 

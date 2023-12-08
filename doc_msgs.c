@@ -379,13 +379,6 @@ static int32_t newreadmessage(
 
   char *name = getusername(mh->poster, 1);
 
-  // update the name of the poster too
-  if (!mh->deleted) {
-    if (name && mh->poster_name[0] == 0) {
-      strcpy(mh->poster_name, name);
-    }
-  }
-
   /* This shows the room description */
   if (mh->mtype == MES_DESC) {
     title = my_sprintf(title, "@G by @C%s", name);
@@ -445,7 +438,7 @@ static int32_t newreadmessage(
             strcpy(poster_name, "<Deleted User>");
           }
         }
-        user = finduser(mh->deleted_by_name, 0, 0);
+        user = finduser(0, mh->deleted_by_num, 0);
         if (user) {
           strcpy(delby_color, "@C");
         } else {
@@ -462,10 +455,14 @@ static int32_t newreadmessage(
           title = my_sprintf(title, " Original: @Y%s>@G\n", mh->del_room_name);
         }
 
-        /* [date] from [poster] [original] deleted by [name] on [date]
-        Room: [room name] - [now called] */
       } else {
-        title = my_sprintf(title, "@G from @C%s%s%s", name,
+        char poster_color[3] = "@C";
+
+        if (*name == '<' && mh->poster_name[0] !=0) {
+          name = mh->poster_name;
+          strcpy(poster_color, "@R");
+        }
+        title = my_sprintf(title, "@G from %s%s%s%s", poster_color, name,
                            mh->mtype == MES_FM ? " (Forum Moderator)" : "",
                            (mh->mtype == MES_SYSOP &&
                             (!mh->mail || ((*auth && ouruser->f_aide) ||
