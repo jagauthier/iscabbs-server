@@ -148,11 +148,12 @@ void show_online(int8_t level) {
         colorize("@Y%-19s %c @R%2d:%02d ", btmp->name, msg_status, hour, min);
         if (btmp->sleeptimes > 0) {
           colorize("@B");
-           colorize ("[idle for %2d:%02d]: ",
+           colorize ("idle for %2d:%02d\n",
            	btmp->sleeptimes / 60, btmp->sleeptimes % 60);
          }
-        
+        else {
         colorize("@M%-41s\n", btmp->doing);
+        }
 
         break;
     }
