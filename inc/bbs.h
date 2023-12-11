@@ -411,13 +411,13 @@ struct mheader
   uint16_t forum;
   uint8_t mtype;
   time_t ptime;
-  /* 128 bytes that can be used in the future to reduce 
+  /* 128 bytes that can be used in the future to reduce
   conversion updates */
   char poster_name[MAXALIAS + 1];
   char del_room_name[MAXNAME +1];
   uint8_t del_room_num;
   time_t dtime;
-  uint8_t future_use[58];
+  uint8_t future_use[57];
   union
   {
     struct
@@ -426,6 +426,7 @@ struct mheader
     } mail;
   } ext;
 };
+
 
 #define X_NORMAL	0
 #define X_QUESTION	1

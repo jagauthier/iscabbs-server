@@ -22,7 +22,7 @@
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [{
-                "name": "BBSNAME", "value": "Dredd"
+                "name": "BBSNAME", "value": "KAM"
             }],
             "externalConsole": false,
             "MIMode": "gdb",
