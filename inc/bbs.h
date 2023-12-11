@@ -417,7 +417,7 @@ struct mheader
   char del_room_name[MAXNAME +1];
   uint8_t del_room_num;
   time_t dtime;
-  uint8_t future_use[57];
+  uint8_t future_use[58];
   union
   {
     struct
