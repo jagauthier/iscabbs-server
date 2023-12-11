@@ -99,7 +99,7 @@
 
 /* define this if you want users logged out after 6000 minutes.  I should
    make this smarter */
-#define	TOTALTIMELIMIT
+#define	TOTALTIMELIMITw
 
 #include "bbs.h"
 #include "proto.h"

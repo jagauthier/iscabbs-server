@@ -24,7 +24,7 @@ INCDEP      := -I$(INCDIR)
 #CFLAGS   += -O2
 CFLAGS   += -g
 CFLAGS   += -Wall
-CFLAGS   += -Wextra
+CFLAGS   += -Wextra -Werror=implicit-function-declaration
 #CFLAGS   += -Werror
 ## These warnings should be cleaned up ASAP one by one,
 ## they are listed in severity order (most severe is at the top).
@@ -55,8 +55,8 @@ DATA_MGMT_SRC := \
 
 
 UTIL_SOURCES := \
-	$(UTIL_SRC_DIR)/utils_main.c \
-	$(UTIL_SRC_DIR)/monitor_bigbtmp.c
+	$(UTIL_SRC_DIR)/file_utils.c 
+	
 	
 ALL_BBS_SOURCES := \
 	./doc.c \
@@ -111,7 +111,7 @@ setupbbs: $(SETUP_OBJECTS)
 convert: $(CONVERT_OBJECTS) $(ALL_BBS_OBJECTS) 
 	$(CC) $(CPPFLAGS) $(CFLAGS) -o $@ $^ $(LDFLAGS) $(LIBS)
 
-update_msg_poster: $(ALL_BBS_OBJECTS)  $(BUILDDIR)/update_msg_poster.o
+fix_mail: $(ALL_BBS_OBJECTS) $(UTIL_OBJECTS) $(BUILDDIR)/fix_mail.o
 	$(CC) $(CPPFLAGS) $(CFLAGS) -o $@ $^ $(LDFLAGS) $(LIBS)
 
 bbs_utils: $(UTIL_OBJECTS) $(ALL_BBS_OBJECTS) 

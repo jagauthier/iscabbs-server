@@ -1,17 +1,17 @@
 {
     "configurations": [
         {
-            "name": "Room Shuffle (gdb)",
+            "name": "Fix mail (gdb)",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/room_shuffle",
+            "program": "${workspaceFolder}/fix_mail",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],
             "externalConsole": false,
             "MIMode": "gdb",
-            "preLaunchTask": "Build room_shuffle",
+            "preLaunchTask": "Build fix_mail",
         },
         {
             "name": "BBS",
@@ -22,7 +22,7 @@
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [{
-                "name": "BBSNAME", "value": "Dredd"
+                "name": "BBSNAME", "value": "KAM"
             }],
             "externalConsole": false,
             "MIMode": "gdb",

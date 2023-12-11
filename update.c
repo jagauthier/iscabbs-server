@@ -130,7 +130,7 @@ static struct userinfo *getusers(uint32_t *ucount) {
         zap = TRUE;
       }
       /* Zap if we have marked for deletion */
-      else if (up->f_deleted && days_since_on >= 0) {
+      else if (up->f_deleted && days_since_on >= 1) {
         zap = TRUE;
       }
       /* Don't delete Guest */

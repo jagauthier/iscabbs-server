@@ -40,10 +40,10 @@
         },
         {
             "type": "cppbuild",
-            "label": "Build room_analysis",
+            "label": "Build fix_mail",
             "command": "make",
             "args": [
-                "room_analysis",
+                "fix_mail",
             ],
             "options": {
                 "cwd": "${workspaceFolder}"

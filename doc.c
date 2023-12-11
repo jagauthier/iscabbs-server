@@ -617,11 +617,6 @@ void dologout(void) {
   my_printf("Logout\n\nReally log out? (Y/N) -> ");
   flush_input(0);
   if (yesno(-1)) {
-    /*
-    my_printf("\nYou are the weakest link.  Goodbye.\n");
-    my_printf("\nDude, I think it would be best if we didn't piss off Cartman
-    again.\n");
-    */
     my_printf("\n");
     do_fortune();
     my_printf("\nThanks for dropping by.\n");
