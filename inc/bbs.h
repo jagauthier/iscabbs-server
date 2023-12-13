@@ -29,7 +29,7 @@
 
 
 #define AIDELIST    ROOT"etc/aidelist"	/* copy of who's an aide    */
-#define NEWAIDELIST    ROOT"etc/newaidelist"	/* copy of who's an aide    */
+#define NEWAIDELIST ROOT"etc/newaidelist"	/* copy of who's an aide    */
 #define ERRLOG      ROOT"etc/errlog"	/* Error log file */
 #define ETC         ROOT"etc/"		/* Where lots of stuff resides */
 #define FORTUNE	    "/usr/bin/fortune -a"	/* Fortune! */
@@ -44,10 +44,11 @@
 #define TMPDATA     ROOT"data/tmpdata"	/* Temp data (not saved to disk) */
 #define USERDATA    ROOT"data/userdata"	/* User index/data */
 #define XMSGDATA    ROOT"data/xmsgdata" /* X message data file */
-#define MOTD	    ROOT"etc/motd"	/* Message of the day */
+#define MOTD	      ROOT"etc/motd"	/* Message of the day */
 #define VOTEFILE    ROOT"etc/votedata"	/* Voting info */
 #define WHODIR      ROOT"etc/who/"	/* who knows rooms directory */
-#define ISCAWHO      ROOT"etc/iscawho"	/* who knows rooms directory */
+#define ISCAWHO     ROOT"etc/iscawho"	/* who knows rooms directory */
+#define BLOCKLIST   ROOT"etc/blocklist"	/* ip blocklist */
 
 
 /* Miscellaneous Defs */
@@ -59,6 +60,7 @@
 #define BACKWARD		(-1)
 #define BEL                     7	/* control-g (bell) */
 #define BS			'\b'	/* back space */
+#define CTRL_A                  1	/* control-a */
 #define CTRL_D                  4	/* control-d */
 #define CTRL_R			18	/* control-r */
 #define CTRL_U			21	/* control-u */
@@ -425,6 +427,15 @@ struct mheader
       uint32_t recipient;
     } mail;
   } ext;
+};
+
+#define MAX_IPS 999
+
+struct blocklist{
+  uint32_t usernum[MAX_IPS];	 /* who blocked it */
+  char     name[MAX_IPS][MAXALIAS + 1];		/* also who blocked it */
+  char     reason[MAX_IPS][40];
+  char     ip[MAX_IPS][15];
 };
 
 

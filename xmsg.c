@@ -14,12 +14,14 @@ static int displayx(int32_t pos, int num, time_t *t, int32_t *prev,
   char name[MAXALIAS + 1];
   struct xheader *xh;
   char *s;
+  
   int8_t sender = 1;
   bool noshow = pos < 0;
+  char X[128];
 
   pos = pos < 0 ? -pos : pos;
 
-  //colorize("@Rrequesting: %i\n@g", pos);
+  // colorize("@Rrequesting: %i\n@g", pos);
   xh = (struct xheader *)(void *)(xmsg + pos);
 
   if (msg->xcurpos + (msg->xmsgsize >> 6) >
@@ -41,8 +43,10 @@ static int displayx(int32_t pos, int num, time_t *t, int32_t *prev,
               getusername(xh->snum, 1));
     s = (char *)(void *)(xh + 1);
     while (*s) {
-      s += my_printf(">%s\n", s) - 1;
+      s += sprintf(X,  ">%s\n", s) - 1;
+      colorize(X);
     }
+    colorize("@G");
     return (0);
   }
 
@@ -75,7 +79,7 @@ static int displayx(int32_t pos, int num, time_t *t, int32_t *prev,
       *next = xh->rnext;
     }
   }
-  
+
   if (prev) {
     if (sender) {
       *prev = xh->sprev;
@@ -85,7 +89,7 @@ static int displayx(int32_t pos, int num, time_t *t, int32_t *prev,
   } else if (sender > 0) {
     return (1);
   }
-  
+
   if (noshow) {
     return (0);
   }
@@ -110,10 +114,13 @@ static int displayx(int32_t pos, int num, time_t *t, int32_t *prev,
             sender > 0 ? "---" : (xh->type == X_QUESTION ? "%%%" : "***"));
   s = (char *)(void *)(xh + 1);
   while (*s) {
-    s += my_printf("%c%s\n",
-                   sender > 0 ? '-' : (xh->type == X_QUESTION ? '%' : '>'), s) -
+    s += sprintf(X, "%c%s\n",
+                 sender > 0 ? '-' : (xh->type == X_QUESTION ? '%' : '>'), s) -
          1;
+    colorize(X);
   }
+  colorize("@G");
+  
 
   if (client) {
     my_putchar(IAC);

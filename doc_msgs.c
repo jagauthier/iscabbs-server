@@ -4,6 +4,8 @@
 #include "defs.h"
 #include "ext.h"
 
+void display_with_pagination(const char *message, uint8_t rows, int16_t);
+
 /****************************************************************************
  * deletemessage                  Updated 10/27/91 -dll
  * Deletes message from current room, delnum is the universal message nbr of
@@ -458,7 +460,7 @@ static int32_t newreadmessage(
       } else {
         char poster_color[3] = "@C";
 
-        if (*name == '<' && mh->poster_name[0] !=0) {
+        if (*name == '<' && mh->poster_name[0] != 0) {
           name = mh->poster_name;
           strcpy(poster_color, "@R");
         }
@@ -513,17 +515,12 @@ static int32_t newreadmessage(
   colorize("@G\n");
 
   p += mh->hlen;
-  int16_t msgsize = mh->len;
-  int16_t msgpos = 0;
+  // int16_t msgsize = mh->len;
+  // int16_t msgpos = 0;
   int16_t linenbr = mh->mtype == MES_DESC ? 3 : 1;
 
-  for (int i;;) {
-    if (!(i = *p++) ||
-        ((++msgpos, my_putchar(i)) == '\n' && ++linenbr >= rows - 1 &&
-         line_more(&linenbr, (msgpos * 100) / msgsize) < 0)) {
-      break;
-    }
-  }
+  display_with_pagination((const char *)p, rows - 1, linenbr);
+
   free(authfield);
   free(title);
   return (0);
@@ -573,6 +570,7 @@ int8_t makemessage(
   struct mheader *mh;
   unsigned char *tmpp;
   unsigned char *tmpsave;
+  //uint8_t at_counter = 0;
 
   {
     size_t size = 53248;
@@ -692,9 +690,27 @@ int8_t makemessage(
 
       if (chr == BS) {
         if (lnlngth) {
+          /*
+            if (thisline[lnlngth] == '@' && thisline[lnlngth - 1] == '@') {
+              my_putchar(BS);
+              my_putchar(SP);
+              my_putchar(BS);
+              my_putchar(BS);
+              my_putchar(SP);
+              my_putchar(BS);
+
+            } else if (thisline[lnlngth] == '@' && thisline[lnlngth - 1] != '@')
+            { lnlngth--;
+              // reset the color
+              colorize("@G");
+
+            } else {
+            */
           my_putchar(BS);
           my_putchar(SP);
           my_putchar(BS);
+          //}
+
           if (lnlngth-- == lastspace) {
             for (; --lastspace && thisline[lastspace] != SP;)
               ;
@@ -703,6 +719,16 @@ int8_t makemessage(
         continue;
       } else if (chr == CTRL_X) {
         for (; lnlngth; lnlngth--) {
+          /*
+          if (thisline[lnlngth] == '@' && thisline[lnlngth - 1] == '@') {
+            my_putchar(BS);
+            my_putchar(SP);
+            my_putchar(BS);
+          } else if (thisline[lnlngth] == '@' && thisline[lnlngth - 1] != '@') {
+            lnlngth--;
+            continue;
+          }
+          */
           my_putchar(BS);
           my_putchar(SP);
           my_putchar(BS);
@@ -716,6 +742,14 @@ int8_t makemessage(
           my_putchar(BS);
         }
         for (; lnlngth && thisline[lnlngth] != SP; lnlngth--) {
+          /*
+            if (thisline[lnlngth] == '@' && thisline[lnlngth - 1] == '@') {
+              my_putchar(BS);
+              my_putchar(SP);
+              my_putchar(BS);
+            } else if (thisline[lnlngth] == '@' && thisline[lnlngth - 1] != '@')
+            { lnlngth--; continue;
+            }*/
           my_putchar(BS);
           my_putchar(SP);
           my_putchar(BS);
@@ -777,7 +811,26 @@ int8_t makemessage(
       }
 
       if (chr != CTRL_D && chr != LF) {
+        /* Special handling for colors */
+        /*
+        if (chr == '@') {
+          thisline[lnlngth] = chr;
+          at_counter++;
+          // But if we want to put an '@'
+          if (lnlngth && thisline[lnlngth - 1] == '@' && at_counter % 2 == 0) {
+            thisline[lnlngth] = my_putchar(chr);
+          }
+        } else {
+          // check if the prior was @ and then colorize
+          // Which will eat the chars if they are invalid.
+          if (lnlngth && thisline[lnlngth - 1] == '@' && at_counter % 2) {
+            thisline[lnlngth] = chr;
+            colorize("@%c", (unsigned char)chr);
+            at_counter = 0;
+          } else { */
         thisline[lnlngth] = my_putchar(chr);
+        // }
+        //}
         continue;
       } else if (lnlngth || (chr == LF && upload)) {
         int save = lnlngth;
@@ -889,6 +942,37 @@ int8_t makemessage(
         my_putc((byte >> 8) & 255, stdout);
         my_putc(byte & 255, stdout);
         block = 1;
+      }
+    }
+  }
+}
+
+// Function to display the string with pagination support.
+void display_with_pagination(const char *message, uint8_t rows,
+                             int16_t linenbr) {
+  int16_t msgpos = 0;
+  const int msgsize = strlen(message);  // Get the size of the message.
+  unsigned char line[128];
+  uint8_t index = 0;
+
+  // Loop through the message and display it.
+  for (const char *p = message; *p; ++p, ++msgpos) {
+    line[index++] = *p;
+    // my_putchar(*p); // Display the current character.
+
+    // Check for newline character.
+    if (*p == '\n') {
+      line[index] = 0;
+      colorize((const char *)line);
+      index = 0;
+      linenbr++;  // Increment the line number counter.
+
+      // Check if we have reached the end of page.
+      if (linenbr >= rows) {
+        // Handle pagination, break if the user decides to quit.
+        if (line_more(&linenbr, (msgpos * 100) / msgsize) < 0) {
+          break;
+        }
       }
     }
   }

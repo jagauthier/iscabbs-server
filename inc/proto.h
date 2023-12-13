@@ -59,6 +59,7 @@ void my_exit (int);
 uint16_t setup_express (void);
 char *gethost (void);
 int inkey (void);
+int inkey_other (void);
 void get_string (const char *, int, char *, int);
 void get_new_string (const char *, int, char *, int, int);
 int get_single_quiet (const char *);
@@ -66,6 +67,8 @@ void hit_return_now (void);
 void help (const char *, int);
 void more (const char *, bool);
 int openfiles (void);
+bool open_ip_blocklist(void);
+void ip_mgmt_menu(void);
 unsigned char *mmap_file(const char *path, size_t* size) __attribute__((nonnull(1,2)));
 unsigned char *mmap_anonymous(size_t size) __attribute__((alloc_size(1)));
 int errlog (const char * fmt,...) __attribute__((format(printf,1,2)));
@@ -159,6 +162,7 @@ int32_t msem_unlock (int32_t *);
 const char * mystrstr(const char *haystack, const char* needle);
 char * mystrstr_nonconst(char *haystack, const char* needle);
 int my_printf (const char *fmt, ...) __attribute__((format(printf,1,2)));
+int my_c_sprintf (const char *fmt, ...) __attribute__((format(printf,1,2)));
 
 char* my_vsprintf (char* prefix, const char *fmt, va_list ap);
     // return a new buffer that is the concatenation of 'prefix' + the formatted args.

@@ -368,6 +368,8 @@ int inkey(void) {
     if (lastcr && i == '\n' && !client) {
       i = 255;
     }
+
+
     lastcr = 0;
   }
 
@@ -380,6 +382,59 @@ int inkey(void) {
   } else if (i == CTRL_U) {
     i = CTRL_X;
   }
+
+  /* reset the sleep time *after* they type a letter, not after the command
+   is executed */
+  mybtmp->sleeptimes = 0;
+  return (i);
+}
+
+/* use inkey for posts and xs to support color codes */
+/* The one above... I don't want to mess with */
+
+int inkey_other(void) {
+  int i = 257;
+  int noflush = 1;
+
+  while (i > DEL) {
+    if (!tty) {
+      if ((i = telrcv(&noflush)) < 0) {
+        my_exit(0);
+      }
+      if (block) {
+        i = 257;
+      } else if (i != 17) {
+        byte++;
+      }
+    } else if (!INPUT_LEFT()) {
+      if (noflush) {
+        fflush(stdout);
+        noflush = 0;
+      }
+      do {
+      } while ((i = getchar()) < 0 && errno == EINTR);
+
+      if (i < 0) {
+        my_exit(0);
+      }
+    } else {
+      i = getchar();
+    }
+    if (lastcr && i == '\n' && !client) {
+      i = 255;
+    }
+    lastcr = 0;
+  }
+
+  /* Change a couple values to the C/Unix standard */
+  if (i == DEL) {
+    i = BS;
+  } else if (i == '\r') {
+    i = '\n';
+    lastcr = 1;
+  } else if (i == CTRL_U) {
+    i = CTRL_X;
+  } 
 
   /* reset the sleep time *after* they type a letter, not after the command
    is executed */

@@ -49,11 +49,15 @@ int openfiles(void) {
   size = 0;
   if (!(voteinfo = (struct voteinfo *)mmap_file(VOTEFILE, &size))) {
     my_printf("voteinfo problem\n");
-    return -1;
+    return (-1);
   }
 
   if (openuser() < 0) {
     my_printf("openuser\n");
+    return (-1);
+  }
+
+  if (!open_ip_blocklist()) {
     return (-1);
   }
 
