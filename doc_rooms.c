@@ -789,7 +789,7 @@ void readroom(int cit_cmd) {
 static void set_read_params(char cit_cmd, int8_t *dir, int16_t *rm_msg_nbr,
                             int32_t *searchkey) {
   int nbr;
-  char nbr_str[12]; /* C-defined max for longs is +/- 2,147,483,647 */
+  char nbr_str[12]; 
 
   switch (cit_cmd) {
     case 'B':

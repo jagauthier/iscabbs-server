@@ -1,6 +1,8 @@
 #include "defs.h"
 #include "ext.h"
 
+#include <regex.h>
+
 bool open_ip_blocklist(void) {
   int f;
   size_t size;
@@ -28,18 +30,57 @@ bool open_ip_blocklist(void) {
   return true;
 }
 
+int check_ip_addr(const char* ip) {
+    regex_t regex;
+    int ret;
+
+    // Regular expression pattern to match IP address with wildcards
+    const char* pattern = "^\\(\\([0-9]\\{1,3\\}\\|\\*\\)\\.\\)\\{3\\}\\([0-9]\\{1,3\\}\\|\\*\\)$";
+
+    // Compile the regular expression
+    ret = regcomp(&regex, pattern, REG_EXTENDED);
+    if (ret != 0) {
+        printf("Failed to compile regex\n");
+        return -1;
+    }
+
+    // Execute the regular expression
+    ret = regexec(&regex, ip, 0, NULL, 0);
+    if (ret == 0) {
+        printf("Valid IP address\n");
+    } else if (ret == REG_NOMATCH) {
+        printf("Invalid IP address\n");
+    } else {
+        regerror(ret, &regex, NULL, 0);
+        printf("Regex match failed\n");
+    }
+
+    // Free regex resources
+    regfree(&regex);
+
+    return ret;
+}
+void add_host() {
+    char ip[15];
+    colorize("@Y:Enter the IPv4 address to block. You can use @G*@Y as wildcard. ->");
+    get_string("", 15, ip, -1);
+}
+
 void ip_mgmt_menu(void) {
   char chr = '?';
 
   while (chr != ' ' && chr != '\n') {
     switch (chr) {
-      case 'a':
+      case 'A':
+        add_host();
         break;
 
-      case 'd':
+      case 'D':
+       // delete_host();
         break;
 
-      case 'v':
+      case 'V':
+       // view_hosts();
         break;
 
       case '?':

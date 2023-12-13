@@ -515,11 +515,18 @@ static int32_t newreadmessage(
   colorize("@G\n");
 
   p += mh->hlen;
-  // int16_t msgsize = mh->len;
-  // int16_t msgpos = 0;
+  int16_t msgsize = mh->len;
+  int16_t msgpos = 0;
   int16_t linenbr = mh->mtype == MES_DESC ? 3 : 1;
 
-  display_with_pagination((const char *)p, rows - 1, linenbr);
+  for (int i;;) {
+    if (!(i = *p++) ||
+        ((++msgpos, my_putchar(i)) == '\n' && ++linenbr >= rows - 1 &&
+         line_more(&linenbr, (msgpos * 100) / msgsize) < 0)) {
+      break;
+    }
+  }
+  // display_with_pagination((const char *)p, rows - 1, linenbr);
 
   free(authfield);
   free(title);
@@ -551,6 +558,7 @@ int readmessage(
   return (ret);
 }
 
+
 int8_t makemessage(
     struct user *recipient, /* on entry, NULL if its not mail */
     uint8_t mtype,          /* MES_NORMAL, MES_ANON, MES_AN2, MES_DESC */
@@ -570,7 +578,6 @@ int8_t makemessage(
   struct mheader *mh;
   unsigned char *tmpp;
   unsigned char *tmpsave;
-  //uint8_t at_counter = 0;
 
   {
     size_t size = 53248;
@@ -584,7 +591,6 @@ int8_t makemessage(
   mh->magic = M_MAGIC;
   mh->mtype = mtype;
   mh->poster = ouruser->usernum;
-  strcpy(mh->poster_name, ouruser->name);
 
   time(&now);
   mh->ptime = now;
@@ -690,27 +696,9 @@ int8_t makemessage(
 
       if (chr == BS) {
         if (lnlngth) {
-          /*
-            if (thisline[lnlngth] == '@' && thisline[lnlngth - 1] == '@') {
-              my_putchar(BS);
-              my_putchar(SP);
-              my_putchar(BS);
-              my_putchar(BS);
-              my_putchar(SP);
-              my_putchar(BS);
-
-            } else if (thisline[lnlngth] == '@' && thisline[lnlngth - 1] != '@')
-            { lnlngth--;
-              // reset the color
-              colorize("@G");
-
-            } else {
-            */
           my_putchar(BS);
           my_putchar(SP);
           my_putchar(BS);
-          //}
-
           if (lnlngth-- == lastspace) {
             for (; --lastspace && thisline[lastspace] != SP;)
               ;
@@ -719,16 +707,6 @@ int8_t makemessage(
         continue;
       } else if (chr == CTRL_X) {
         for (; lnlngth; lnlngth--) {
-          /*
-          if (thisline[lnlngth] == '@' && thisline[lnlngth - 1] == '@') {
-            my_putchar(BS);
-            my_putchar(SP);
-            my_putchar(BS);
-          } else if (thisline[lnlngth] == '@' && thisline[lnlngth - 1] != '@') {
-            lnlngth--;
-            continue;
-          }
-          */
           my_putchar(BS);
           my_putchar(SP);
           my_putchar(BS);
@@ -742,14 +720,6 @@ int8_t makemessage(
           my_putchar(BS);
         }
         for (; lnlngth && thisline[lnlngth] != SP; lnlngth--) {
-          /*
-            if (thisline[lnlngth] == '@' && thisline[lnlngth - 1] == '@') {
-              my_putchar(BS);
-              my_putchar(SP);
-              my_putchar(BS);
-            } else if (thisline[lnlngth] == '@' && thisline[lnlngth - 1] != '@')
-            { lnlngth--; continue;
-            }*/
           my_putchar(BS);
           my_putchar(SP);
           my_putchar(BS);
@@ -811,26 +781,7 @@ int8_t makemessage(
       }
 
       if (chr != CTRL_D && chr != LF) {
-        /* Special handling for colors */
-        /*
-        if (chr == '@') {
-          thisline[lnlngth] = chr;
-          at_counter++;
-          // But if we want to put an '@'
-          if (lnlngth && thisline[lnlngth - 1] == '@' && at_counter % 2 == 0) {
-            thisline[lnlngth] = my_putchar(chr);
-          }
-        } else {
-          // check if the prior was @ and then colorize
-          // Which will eat the chars if they are invalid.
-          if (lnlngth && thisline[lnlngth - 1] == '@' && at_counter % 2) {
-            thisline[lnlngth] = chr;
-            colorize("@%c", (unsigned char)chr);
-            at_counter = 0;
-          } else { */
         thisline[lnlngth] = my_putchar(chr);
-        // }
-        //}
         continue;
       } else if (lnlngth || (chr == LF && upload)) {
         int save = lnlngth;
