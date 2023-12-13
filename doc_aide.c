@@ -29,13 +29,6 @@ void aide_menu(void) {
 
   while (chr != 'M' && chr != ' ' && chr != '\n') {
     switch (chr) {
-        //      case 'B':
-        //        if (ouruser->f_prog || ouruser->f_admin)
-        //          system("/bin/bash -il");
-        //       else
-        //        chr = 0;
-        //      break;
-
       case 'C':
         my_printf("Create new forum\n");
         createroom();
@@ -60,9 +53,14 @@ void aide_menu(void) {
           help("fmmenu", YES);
         break;
 
-      case 'I':
+      case 'i':
         my_printf("Invite user\n");
         invite();
+        break;
+
+      case 'I':
+        my_printf("IP Management\n");
+        ip_mgmt_menu();
         break;
 
       case 'K':
@@ -110,21 +108,26 @@ void aide_menu(void) {
 
       case '?':
       case '/':
-        if (ouruser->f_admin)
+        if (ouruser->f_admin) {
           help("aidecmd", NO);
-        else
+          }
+        else {
           help("fmcmd", NO);
+          }
         break;
 
       default:
         break;
     }
 
-    if (chr) colorize("\n@Y[%s]@M Forum command ->@G ", msg->room[curr].name);
-    if (ouruser->f_admin)
-      chr = get_single_quiet("BCDEHIKlLMOSWXZ* \n/?");
-    else
-      chr = get_single_quiet("DEHIKMW \n/?");
+    if (chr) {
+      colorize("\n@Y[%s]@M Forum command ->@G ", msg->room[curr].name);
+    }
+    if (ouruser->f_admin) {
+      chr = get_single_quiet("BCDEHiIKlLMOSWXZ* \n/?");
+    } else {
+      chr = get_single_quiet("DEHiKMW \n/?");
+    }
 
   } /* end of while loop */
   my_printf("Forum level\n");

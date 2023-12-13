@@ -18,8 +18,9 @@ int main(int argc, char **argv) {
 
     xbroadcast();
     ouruser->f_admin = true;
+    ouruser->f_aide  = true;
     aide_menu();
-    ouruser->f_admin = false;
+    //ouruser->f_admin = false;
     dologout();
     return 0;
 }

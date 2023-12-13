@@ -5,6 +5,7 @@
 
 #include "defs.h"
 #include "ext.h"
+#include "io.h"
 
 #ifndef BBS
 int ansi = 0;
@@ -131,53 +132,99 @@ int colorize(const char* fmt, ...) {
 }
 
 /* check for color codes and \r\n translation.  Return the number of characters
-   (not including color codes) printed. */
+   printed. */
 static int my_cputs(const char* s) {
   int count = 0;
-
+  bool underline = false;
+  static char last_output[16];
   while (*s) {
+    if (ansi) {
+      if (*s == ' ' || *s == '\n' || *s == '\r') {
+        if (underline) {
+          underline = false;
+          output(ANSI_RESET);
+          output(last_output);
+        }
+      }
+    }
     if (*s == '@') {
       s++;
-      if (ansi) switch (*s) {
+      if (ansi) {
+        switch (*s) {
           case '@':
             count = count + (my_putchar('@') != EOF);
             break;
           case 'r':
+            output(ANSI_FG_RED);
+            strcpy(last_output, ANSI_FG_RED);
+            break;
           case 'R':
-            output("\033[31m");
+            output(ANSI_FG_BOLD_RED);
+            strcpy(last_output, ANSI_FG_BOLD_RED);
             break;
           case 'g':
+            output(ANSI_FG_GREEN);
+            strcpy(last_output, ANSI_FG_GREEN);
+            break;
           case 'G':
-            output("\033[32m");
+            output(ANSI_FG_BOLD_GREEN);
+            strcpy(last_output, ANSI_FG_BOLD_GREEN);
             break;
           case 'y':
+            output(ANSI_FG_YELLOW);
+            strcpy(last_output, ANSI_FG_YELLOW);
+            break;
           case 'Y':
-            output("\033[33m");
+            output(ANSI_FG_BOLD_YELLOW);
+            strcpy(last_output, ANSI_FG_BOLD_YELLOW);
             break;
           case 'b':
+            output(ANSI_FG_BLUE);
+            strcpy(last_output, ANSI_FG_BLUE);
+            break;
           case 'B':
-            output("\033[34m");
+            output(ANSI_FG_BOLD_BLUE);
+            strcpy(last_output, ANSI_FG_BOLD_BLUE);
             break;
           case 'm':
-          case 'M':
           case 'p':
+            output(ANSI_FG_MAGENTA);
+            strcpy(last_output, ANSI_FG_MAGENTA);
+            break;
+          case 'M':
           case 'P':
-            output("\033[35m");
+            output(ANSI_FG_BOLD_MAGENTA);
+            strcpy(last_output, ANSI_FG_BOLD_MAGENTA);
             break;
           case 'c':
+            output(ANSI_FG_CYAN);
+            strcpy(last_output, ANSI_FG_CYAN);
+            break;
           case 'C':
-            output("\033[36m");
+            output(ANSI_FG_BOLD_CYAN);
+            strcpy(last_output, ANSI_FG_BOLD_CYAN);
             break;
           case 'w':
+            output(ANSI_FG_WHITE);
+            strcpy(last_output, ANSI_FG_WHITE);
+            break;
           case 'W':
-            output("\033[37m");
+            output(ANSI_FG_BOLD_WHITE);
+            strcpy(last_output, ANSI_FG_BOLD_WHITE);
             break;
           case 'd':
+            // output("\033[0;30m");
+            // break;
           case 'D':
-            output("\033[1m\033[33m");
+            output(ANSI_FG_BOLD_BLACK);
+            strcpy(last_output, ANSI_FG_BOLD_BLACK);
+            break;
+          case 'U':
+            underline = true;
+            output("\033[4m");
             break;
         }
-      else if (*s == '@') {
+      } else if (*s == '@') {
         count += (my_putchar(*s) != EOF);
       }
     } else {
@@ -185,7 +232,8 @@ static int my_cputs(const char* s) {
     }
     ++s;
   }
-
+  output(ANSI_RESET);
+  output(last_output);
   return count;
 }
 

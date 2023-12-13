@@ -3,7 +3,7 @@
  */
 #include "defs.h"
 #include "ext.h"
-static void blockhost(void);
+
 static void inituser(void);
 
 void bbsstart(void) {
@@ -51,7 +51,7 @@ void bbsstart(void) {
     if (ouruser->f_prog) {
       cit_cmd = get_single_quiet(
           "0123456789ABbCdD\005eEFfGHIJKLNOpPqQRsStTuUvVwWxX\027\030yYZ "
-          "!+/?#%@-\"");
+          "+/?#%@-\"");
     } else if (ouruser->f_aide) {
       cit_cmd = get_single_quiet(
           "0123456789ABbCdD\005eEFfGHIJKLNOpPqQRsStTuUvVwWxX\027\030yYZ "
@@ -75,34 +75,11 @@ void bbsstart(void) {
       continue;
     }
 
-    //    if (curr == LOBBY_RM_NBR && strchr("dDGNqsTU\027X\030Z% ", cit_cmd))
-    //    {
-    //      if (bueller++ >= 12)
-    //     {
-    //	int rndf = rnd(fun_len);
-    //	colorize("@R%s@Y\nLobby> @G", fun_stuff[rndf]);
-    //	flush_input(bueller / 25);
-    //	bueller = 0;
-    //   }
-    //      if (bueller >= 100)
-    //      {
-    //        colorize("@R\n\n\nGo away until you have something useful to
-    //        do!\n\n\n@G"); my_exit(10);
-    //      }
-    //    }
-    //    else
-    //      bueller = 0;
-
     if (strchr("0123456789AC\005eEHJpPQSvVx\030yYZ#-\"", cit_cmd)) {
       mybtmp->nox = 1;
     }
 
     switch (cit_cmd) {
-      case '!':
-        my_printf("Block host\n");
-        blockhost();
-        break;
-
       case 'A':
         my_printf("Sysop commands %s\n", msg->room[curr].name);
         aide_menu();
@@ -570,48 +547,6 @@ bool wanttoyell(char cmd) {
   return FALSE;
 }
 
-static void blockhost(void) {
-  char bl_host[51];
-
-  colorize("@YHostname or IP to block (blank to quit): @G");
-  get_string("", 51, bl_host, -1);
-  if (strlen(bl_host) == 0) {
-    colorize("@YCancel.\n@G");
-  } else {
-    // printf("Hmm.  Can't block %s", bl_host);
-    printf("Are you sure you want to block %s(Y/n)? ", bl_host);
-    switch (get_single_quiet("YyNn\n")) {
-        //    case 'y':
-        //  printf("\n");
-        //       sprintf(blockhost, "/home/bbs/bin/blockip.sh %s", bl_host);
-        //       system(blockhost);
-        //  printf("%s blocked\n", bl_host);
-        //     break;
-
-      case 'Y': {
-        printf("\n");
-        char *blockhost =
-            my_sprintf(NULL, "/home/bbs/bin/blockip.sh %s", bl_host);
-        system(blockhost);
-        free(blockhost);
-        colorize("@R\n%s blocked\n@G", bl_host);
-      } break;
-
-      case 'N':
-        colorize("@RCanceled.\n");
-        break;
-      case 'n':
-        colorize("@RCanceled.\n");
-        break;
-
-      default:
-        colorize("@RCanceled.\n");
-        break;
-    }
-    // sprintf(blockhost, "echo \"/home/bbs/bin/blockip.sh %s\"> /tmp/test",
-    // bl_host); system(blockhost);
-  }
-}
 
 void dologout(void) {
   my_printf("Logout\n\nReally log out? (Y/N) -> ");

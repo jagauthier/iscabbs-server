@@ -358,7 +358,7 @@ void flush_input(int sec) {
 void fr_delete(int32_t delnum, int32_t pos) {
   int16_t i;
   struct mheader *mh;
-  struct user *user;
+
   if (curr == MAIL_RM_NBR) {
     /*
      * We only delete mail from our personal mailbox....just like regular US
@@ -385,7 +385,7 @@ void fr_delete(int32_t delnum, int32_t pos) {
     /* set up the parameters to copy a deleted message */
     if (pos >= 0) {
       mh = (struct mheader *)(msgstart + pos);
-      user = finduser(NULL, mh->poster, 0);
+
 
       if (mh->magic != M_MAGIC) {
         my_printf("No magic when deleting");

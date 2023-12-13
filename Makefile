@@ -67,6 +67,7 @@ ALL_BBS_SOURCES := \
 	./finger.c \
 	./global.c \
 	./io.c \
+	./ip_mgmt.c \
 	./qmisc.c \
 	./qrunbbs.c \
 	./qstate.c \

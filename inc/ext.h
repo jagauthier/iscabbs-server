@@ -4,6 +4,7 @@ extern uint16_t	       curr;
 extern long            savedhighest;
 extern struct btmp    *mybtmp;
 extern struct bigbtmp *bigbtmp;
+extern struct blocklist *blocklist;
 extern struct user    *ouruser;	/* The person we have logged in here */
 extern struct voteinfo	*voteinfo;	/* Voting booth */
 extern int16_t           logintime;
