@@ -14,10 +14,10 @@ static int displayx(int32_t pos, int num, time_t *t, int32_t *prev,
   char name[MAXALIAS + 1];
   struct xheader *xh;
   char *s;
-  
+
   int8_t sender = 1;
   bool noshow = pos < 0;
-  char X[128];
+  char X[160];
 
   pos = pos < 0 ? -pos : pos;
 
@@ -43,7 +43,8 @@ static int displayx(int32_t pos, int num, time_t *t, int32_t *prev,
               getusername(xh->snum, 1));
     s = (char *)(void *)(xh + 1);
     while (*s) {
-      s += sprintf(X,  ">%s\n", s) - 1;
+      s += sprintf(X, ">%s\n", s) - 1;
+      replace_substring(X, "%", "%%");
       colorize(X);
     }
     colorize("@G");
@@ -117,10 +118,10 @@ static int displayx(int32_t pos, int num, time_t *t, int32_t *prev,
     s += sprintf(X, "%c%s\n",
                  sender > 0 ? '-' : (xh->type == X_QUESTION ? '%' : '>'), s) -
          1;
+    replace_substring(X, "%", "%%");
     colorize(X);
   }
   colorize("@G");
-  
 
   if (client) {
     my_putchar(IAC);

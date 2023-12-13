@@ -518,15 +518,15 @@ static int32_t newreadmessage(
   int16_t msgsize = mh->len;
   int16_t msgpos = 0;
   int16_t linenbr = mh->mtype == MES_DESC ? 3 : 1;
-
-  for (int i;;) {
-    if (!(i = *p++) ||
-        ((++msgpos, my_putchar(i)) == '\n' && ++linenbr >= rows - 1 &&
-         line_more(&linenbr, (msgpos * 100) / msgsize) < 0)) {
-      break;
+  
+    for (int i;;) {
+      if (!(i = *p++) ||
+          ((++msgpos, my_putchar(i)) == '\n' && ++linenbr >= rows - 1 &&
+           line_more(&linenbr, (msgpos * 100) / msgsize) < 0)) {
+        break;
+      }
     }
-  }
-  // display_with_pagination((const char *)p, rows - 1, linenbr);
+  //display_with_pagination((const char *)p, rows - 1, linenbr);
 
   free(authfield);
   free(title);
@@ -557,7 +557,6 @@ int readmessage(
 
   return (ret);
 }
-
 
 int8_t makemessage(
     struct user *recipient, /* on entry, NULL if its not mail */
@@ -903,7 +902,7 @@ void display_with_pagination(const char *message, uint8_t rows,
                              int16_t linenbr) {
   int16_t msgpos = 0;
   const int msgsize = strlen(message);  // Get the size of the message.
-  unsigned char line[128];
+  char line[200];
   uint8_t index = 0;
 
   // Loop through the message and display it.
@@ -914,6 +913,9 @@ void display_with_pagination(const char *message, uint8_t rows,
     // Check for newline character.
     if (*p == '\n') {
       line[index] = 0;
+      if (strstr(line, "%")) {
+        replace_substring(line, "%", "%%");
+      }
       colorize((const char *)line);
       index = 0;
       linenbr++;  // Increment the line number counter.

@@ -14,6 +14,43 @@ int ansi = 0;
 static int my_cputs(const char* s);
 static int my_puts(const char* s);
 
+
+void replace_substring(char *str, const char *oldSubstr,
+                        const char *newSubstr) {
+  // Calculate the lengths of the strings
+  char output[strlen(str) * 2];
+  char *mod;
+  size_t strLen = strlen(str);
+  size_t oldLen = strlen(oldSubstr);
+  size_t newLen = strlen(newSubstr);
+
+  // Count the occurrences of oldSubstr in str
+  int count = 0;
+  const char *ptr = str;
+  while ((ptr = strstr(ptr, oldSubstr))) {
+    count++;
+    ptr += oldLen;
+  }
+
+  // Calculate the size needed for the replaced string
+  uint8_t new_len = strLen + count * (newLen - oldLen);
+  output[new_len] = '\0';  // Null-terminate the string
+  mod = output;
+  // Perform the replacement
+  ptr = str;
+  while (count--) {
+    const char *found = strstr(ptr, oldSubstr);
+    uint8_t len = found - ptr;
+    memcpy(mod, ptr, len);
+    mod += len;
+    memcpy(mod, newSubstr, newLen);
+    mod += newLen;
+    ptr = found + oldLen;
+  }
+  strcpy(mod, ptr);  // Copy the remaining part of the string
+  strcpy(str, output);
+}
+
 /* A standard printf -- no color code recognition. */
 /* works best if output is not fflushed */
 int my_printf(const char* fmt, ...) {
@@ -133,7 +170,7 @@ int colorize(const char* fmt, ...) {
 
 /* check for color codes and \r\n translation.  Return the number of characters
    printed. */
-static int my_cputs(const char* s) {
+static int my_cputs_new(const char* s) {
   int count = 0;
   bool underline = false;
   static char last_output[16];
@@ -237,6 +274,65 @@ static int my_cputs(const char* s) {
   return count;
 }
 
+
+/* check for color codes and \r\n translation.  Return the number of characters
+   (not including color codes) printed. */
+static int my_cputs(const char* s) {
+  int count = 0;
+
+  while (*s) {
+    if (*s == '@') {
+      s++;
+      if (ansi) switch (*s) {
+          case '@':
+            count = count + (my_putchar('@') != EOF);
+            break;
+          case 'r':
+          case 'R':
+            output("\033[31m");
+            break;
+          case 'g':
+          case 'G':
+            output("\033[32m");
+            break;
+          case 'y':
+          case 'Y':
+            output("\033[33m");
+            break;
+          case 'b':
+          case 'B':
+            output("\033[34m");
+            break;
+          case 'm':
+          case 'M':
+          case 'p':
+          case 'P':
+            output("\033[35m");
+            break;
+          case 'c':
+          case 'C':
+            output("\033[36m");
+            break;
+          case 'w':
+          case 'W':
+            output("\033[37m");
+            break;
+          case 'd':
+          case 'D':
+            output("\033[1m\033[33m");
+            break;
+        }
+      else if (*s == '@') {
+        count += (my_putchar(*s) != EOF);
+      }
+    } else {
+      count += (my_putchar(*s) != EOF);
+    }
+    ++s;
+  }
+
+  return count;
+}
 int output(const char* s) {
   while (*s) {
     my_putchar(*s);

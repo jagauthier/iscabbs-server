@@ -446,51 +446,36 @@ void get_new_string(const char *prompt, int length, char *result, int line,
   }
   for (;;) {
     c = inkey();
-    if (c == ' ' && length == 29 && p == result) {
-      break;
-    }
-    if (c == '\n') {
-      break;
-    }
+    if (c == ' ' && length == 29 && p == result) break;
+    if (c == '\n') break;
 
     if (c < SP && c != BS && c != CTRL_X && c != CTRL_W && c != CTRL_R) {
-      if (invalid++) {
-        flush_input(invalid < 6 ? (invalid / 2) : 3);
-      }
+      if (invalid++) flush_input(invalid < 6 ? (invalid / 2) : 3);
       continue;
-    } else {
+    } else
       invalid = 0;
-    }
 
     if (c == CTRL_R) {
       *p = 0;
-      if (!hidden) {
-        my_printf("\n%s", result);
-      }
+      if (!hidden) my_printf("\n%s", result);
       continue;
     }
 
-    if (c == BS || c == CTRL_X) {
-      if (p == result) {
+    if (c == BS || c == CTRL_X)
+      if (p == result)
         continue;
-      } else {
+      else
         do {
           my_putchar(BS);
           my_putchar(SP);
           my_putchar(BS);
           --p;
         } while (c == 24 && p > result);
-      }
-    } else if (c == CTRL_W) {
-      for (q = result; q < p; q++) {
-        if (*q != ' ') {
-          break;
-        }
-      }
+    else if (c == CTRL_W) {
+      for (q = result; q < p; q++)
+        if (*q != ' ') break;
       for (c = q == p; p > result && (!c || p[-1] != ' '); p--) {
-        if (p[-1] != ' ') {
-          c = 1;
-        }
+        if (p[-1] != ' ') c = 1;
         my_putchar(BS);
         my_putchar(SP);
         my_putchar(BS);
@@ -498,18 +483,15 @@ void get_new_string(const char *prompt, int length, char *result, int line,
     } else if (p < result + length && c >= SP) {
       *p++ = c;
       if (!client) {
-        if (!hidden) {
+        if (!hidden)
           my_putchar(c);
-        } else {
+        else
           my_putchar('.');
-        }
       }
-    } else if (c < SP || line < 0 || line == limit - 1) {
+    } else if (c < SP || line < 0 || line == limit - 1)
       continue;
-    } else {
-      if (c == ' ') {
-        break;
-      }
+    else {
+      if (c == ' ') break;
       for (q = p - 1; *q != ' ' && q > result; q--)
         ;
       if (q > result) {
@@ -530,9 +512,7 @@ void get_new_string(const char *prompt, int length, char *result, int line,
     }
   }
   *p = '\0';
-  if (!client) {
-    my_putchar('\n');
-  }
+  if (!client) my_putchar('\n');
 }
 
 int get_single_quiet(const char *valid_string) {
@@ -542,20 +522,14 @@ int get_single_quiet(const char *valid_string) {
   for (;;) {
     c = inkey();
     /* First check it in the case given */
-    if (index(valid_string, c)) {
-      break;
-    }
+    if (index(valid_string, c)) break;
     /* If not, if we're lower case, try upper case */
     if (c >= 'a' && c <= 'z') {
       c -= 32;
-      if (index(valid_string, c)) {
-        break;
-      }
+      if (index(valid_string, c)) break;
     }
     /* It is an invalid character... */
-    if (invalid++) {
-      flush_input(invalid < 6 ? (invalid / 2) : 3);
-    }
+    if (invalid++) flush_input(invalid < 6 ? (invalid / 2) : 3);
   }
   return (c);
 }
