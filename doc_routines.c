@@ -27,7 +27,7 @@ int countmsgs(void) {
   }
 
   if (new > 0) {
-    colorize("@Y[%s]  @C%d @Gmessages,@C %d @Gnew\n", msg->room[curr].name,
+    colorize(BOLD_YELLOW"[%s]  "BOLD_CYAN"%d "BOLD_GREEN"messages,"BOLD_CYAN" %d "BOLD_GREEN"new\n", msg->room[curr].name,
              count, new);
   }
 
@@ -66,7 +66,7 @@ void knrooms(struct user *tmpuser) {
     my_printf("No mail for %s\n", tmpuser->name);
 
   linenbr = 5;
-  colorize("\n   @CForums with unread messages:\n@Y");
+  colorize("\n   "BOLD_CYAN"Forums with unread messages:\n"BOLD_YELLOW);
 
   for (rm_nbr = 0; rm_nbr < MAXROOMS; ++rm_nbr) {
     if (rm_nbr != MAIL_RM_NBR) {
@@ -114,7 +114,7 @@ void knrooms(struct user *tmpuser) {
   }
   linenbr = 3;
   oldlength = 1;
-  colorize("\n  @C No unseen messages in:@G\n");
+  colorize("\n  "BOLD_CYAN" No unseen messages in:\n"BOLD_GREEN);
 
   /* now list the rooms that are all read */
   for (rm_nbr = 0; rm_nbr < MAXROOMS; ++rm_nbr) {
@@ -160,7 +160,7 @@ void knrooms(struct user *tmpuser) {
     }
   }
   linenbr = 2;
-  colorize("\n  @C Forgotten public forums:@G\n");
+  colorize("\n  "BOLD_CYAN" Forgotten public forums:\n"BOLD_GREEN);
 
   /* Zapped room list */
   for (rm_nbr = 0; rm_nbr < MAXROOMS; ++rm_nbr) {
@@ -212,7 +212,7 @@ int line_more(int16_t *nbr, int16_t percent) {
     my_putchar(MORE_M);
   }
   for (;;) {
-    colorize("@Y--MORE--");
+    colorize(BOLD_YELLOW"--MORE--");
     if (percent > 99) {
       percent = 99;
     }
@@ -249,7 +249,7 @@ int line_more(int16_t *nbr, int16_t percent) {
     switch (chr) {
       case SP:
       case 'Y':
-        colorize("\r@G              \r");
+        colorize("\r"BOLD_GREEN"              \r");
         if (client) {
           my_putchar(IAC);
           my_putchar(MORE_M);
@@ -258,7 +258,7 @@ int line_more(int16_t *nbr, int16_t percent) {
 
       case LF:
         *nbr = rows - 1;
-        colorize("\r@G              \r");
+        colorize("\r"BOLD_GREEN"              \r");
         if (client) {
           my_putchar(IAC);
           my_putchar(MORE_M);
@@ -269,7 +269,7 @@ int line_more(int16_t *nbr, int16_t percent) {
       case 'N':
       case 'q':
       case 'S':
-        colorize("\r@G              \r");
+        colorize("\r"BOLD_GREEN"              \r");
         if (client) {
           my_putchar(IAC);
           my_putchar(MORE_M);
@@ -386,17 +386,19 @@ void fr_delete(int32_t delnum, int32_t pos) {
     if (pos >= 0) {
       mh = (struct mheader *)(msgstart + pos);
 
-
       if (mh->magic != M_MAGIC) {
         my_printf("No magic when deleting");
+        return;
       }
       // Have to increase the highest value in order for it to be shown as new.
+      mh->old_msgid =  mh->msgid;
       mh->msgid = ++msg->highest;
       mh->deleted = true;
       mh->deleted_by_num = ouruser->usernum;
       mh->del_room_num = curr;
       mh->dtime = time(0);
       mh->mtype = MES_NORMAL;
+
       strcpy(mh->deleted_by_name, ouruser->name);
 
       strcpy(mh->del_room_name, msg->room[curr].name);
@@ -504,7 +506,7 @@ void readdesc(void) {
   char *file = my_sprintf(NULL, "%sroom%d", DESCDIR, curr);
   size = 0;
   if (!(p = mmap_file(file, &size)) || size == 0) {
-    colorize("@RNo Forum Info is available\n");
+    colorize(BOLD_RED"No Forum Info is available\n");
     if (p) {
       munmap((void *)p, size);
     }

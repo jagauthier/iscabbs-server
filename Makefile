@@ -55,7 +55,7 @@ DATA_MGMT_SRC := \
 
 
 UTIL_SOURCES := \
-	$(UTIL_SRC_DIR)/file_utils.c 
+	$(UTIL_SRC_DIR)/test_email_regex.c 
 	
 	
 ALL_BBS_SOURCES := \
@@ -64,7 +64,7 @@ ALL_BBS_SOURCES := \
 	./doc_msgs.c \
 	./doc_rooms.c \
 	./doc_routines.c \
-	./finger.c \
+	./bbsfinger.c \
 	./global.c \
 	./io.c \
 	./ip_mgmt.c \
@@ -112,7 +112,7 @@ setupbbs: $(SETUP_OBJECTS)
 convert: $(CONVERT_OBJECTS) $(ALL_BBS_OBJECTS) 
 	$(CC) $(CPPFLAGS) $(CFLAGS) -o $@ $^ $(LDFLAGS) $(LIBS)
 
-fix_mail: $(ALL_BBS_OBJECTS) $(UTIL_OBJECTS) $(BUILDDIR)/fix_mail.o
+test_email_regex: $(ALL_BBS_OBJECTS) $(UTIL_OBJECTS) $(BUILDDIR)/test_email_regex.o
 	$(CC) $(CPPFLAGS) $(CFLAGS) -o $@ $^ $(LDFLAGS) $(LIBS)
 
 bbs_utils: $(UTIL_OBJECTS) $(ALL_BBS_OBJECTS) 

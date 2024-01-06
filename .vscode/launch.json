@@ -1,17 +1,17 @@
 {
     "configurations": [
         {
-            "name": "Fix mail (gdb)",
+            "name": "test_email_regex (gdb)",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/fix_mail",
+            "program": "${workspaceFolder}/test_email_regex",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],
             "externalConsole": false,
             "MIMode": "gdb",
-            "preLaunchTask": "Build fix_mail",
+            "preLaunchTask": "Build test_email_regex",
         },
         {
             "name": "BBS",
@@ -25,6 +25,40 @@
                 "name": "BBSNAME", "value": "Dredd"
             }],
             "externalConsole": false,
+            "MIMode": "gdb",
+            "preLaunchTask": "Build BBS",
+            "setupCommands": [
+                {
+                    "text": "-gdb-set follow-fork-mode child"
+                }
+            ],
+        },
+        {
+            "name": "BBS Finger",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/bin/bbs",
+            "args": ["-f"],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [{
+                "name": "INIT_STATE", "value": "1"
+            }],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "preLaunchTask": "Build BBS",
+            "setupCommands": [
+                {
+                    "text": "-gdb-set follow-fork-mode child"
+                }
+            ],
+        },
+        {
+            "name": "BBS (Attach)",
+            "type": "cppdbg",
+            "request": "attach",
+            "processId": 155170,
+            "program": "${workspaceFolder}/bin/bbs",
             "MIMode": "gdb",
             "preLaunchTask": "Build BBS",
             "setupCommands": [

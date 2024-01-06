@@ -48,9 +48,9 @@ void change_setup(struct user *workuser) {
   for (;;) {
     if (c) {
       if (chflag) {
-        colorize("\n@YChange config (@R%s@Y) -> @G", workuser->name);
+        colorize(BOLD_YELLOW"\nChange config ("BOLD_RED"%s"BOLD_YELLOW") -> "BOLD_GREEN, workuser->name);
       } else {
-        colorize("\n@YChange config -> @G");
+        colorize(BOLD_YELLOW"\nChange config -> "BOLD_GREEN);
       }
     }
 
@@ -215,8 +215,8 @@ void change_setup(struct user *workuser) {
 
         while (c != '\n' && c != 'Q' && c != ' ') {
           colorize(
-              "\n@Y<0-9> @GAssign QuickX  @Y<L>@Gist QuickX  @Y<O>@Gptions  "
-              "@Y<U>@Gser  @Y<Q>@Guit -> ");
+              BOLD_YELLOW"\n<0-9> "BOLD_GREEN"Assign QuickX  "BOLD_YELLOW"<L>"BOLD_GREEN"ist QuickX  "BOLD_YELLOW"<O>"BOLD_GREEN"ptions  "
+              BOLD_YELLOW"<U>"BOLD_GREEN"ser  "BOLD_YELLOW"<Q>"BOLD_GREEN"uit -> ");
           c = get_single_quiet("0123456789LUO\n Q");
           switch (c) {
             case '0':
@@ -522,12 +522,12 @@ static void change_pass(struct user *tuser, int noold) {
   get_string("New Password: ", -8, pas, -1);
   get_string("Again for verification: ", -8, pas2, -1);
   if (strcmp(pas, pas2)) { /* If they didn't match */
-    colorize("\n@RYour passwords didn't match.  Please try again.\n\n");
+    colorize(BOLD_RED"\nYour passwords didn't match.  Please try again.\n\n");
     return;
   }
   if (strlen(pas) < 6) {
     colorize(
-        "\n@RYour password must be at least 6 characters long.  Please try "
+        BOLD_RED"\nYour password must be at least 6 characters long.  Please try "
         "again.\n\n");
     return;
   }
@@ -1211,7 +1211,7 @@ void change_doing(void) {
     my_printf("Enter a new doing for yourself.\n");
   }
 
-  colorize(">@C");
+  colorize(">"BOLD_CYAN);
   get_string("", sizeof(ouruser->doing) - 1, doing, -1);
   locks(SEM_USER);
   strcpy(ouruser->doing, doing);

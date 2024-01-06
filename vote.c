@@ -36,7 +36,7 @@ void vote_unused_(void) {
     my_printf("\n\nItem #%d:\n\n%s\n", pos + 1, voteinfo->vote[pos].msg);
 
     /* And a little command prompt */
-    colorize("@Y[Slot # %d]  @CVote command -> @G", pos + 1);
+    colorize(BOLD_YELLOW"[Slot # %d]  "BOLD_CYAN"Vote command -> "BOLD_GREEN, pos + 1);
     if (ouruser->f_admin) {
       cmd = get_single_quiet("ABDFNrRVSQ \n/?");
     } else {
@@ -320,8 +320,8 @@ static int makevotemsg(void) {
       checkx(1);
       if (!client && cmd != 'q' && i != 1) {
         colorize(
-            "@Y<A>@Cbort @Y<C>@Continue @Y<P>@Crint @Y<S>@Cave @Y<X>@Cpress "
-            "->@G ");
+            BOLD_YELLOW"<A>"BOLD_CYAN"bort "BOLD_YELLOW"<C>"BOLD_CYAN"ontinue "BOLD_YELLOW"<P>"BOLD_CYAN"rint "BOLD_YELLOW"<S>"BOLD_CYAN"ave "BOLD_YELLOW"<X>"BOLD_CYAN"press "
+            "-> "BOLD_GREEN);
       }
       cmd = get_single_quiet(" \nACPSqQx?/");
       if (strchr("qQx?/", cmd)) {
@@ -339,7 +339,7 @@ static int makevotemsg(void) {
 
         case 'A':
           if (!client) {
-            colorize("@RAbort:@G are you sure? ");
+            colorize(BOLD_RED"Abort:"BOLD_GREEN" are you sure? ");
             if (yesno(-1) == NO) {
               break;
             }
@@ -411,7 +411,7 @@ static int makevotemsg(void) {
     if (!strcmp(send_string[i], "ABORT"))
     {
       freeuser(p);
-      colorize("@ReXpress message aborted.\n");
+      colorize(BOLD_RED"eXpress message aborted.\n");
       return;
     }
 

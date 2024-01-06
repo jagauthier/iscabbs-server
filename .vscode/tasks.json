@@ -40,10 +40,10 @@
         },
         {
             "type": "cppbuild",
-            "label": "Build fix_mail",
+            "label": "Build test_email_regex",
             "command": "make",
             "args": [
-                "fix_mail",
+                "test_email_regex",
             ],
             "options": {
                 "cwd": "${workspaceFolder}"

@@ -227,8 +227,12 @@ void reserve_slot(void) {
     newbtmp.remaddr = sa.sin_addr.s_addr;
     newbtmp.remport = sa.sin_port;
     strcpy(newbtmp.remlogin, ARGV[1] && ARGV[2] ? ARGV[2] : "");
+    if (check_ip_blocklist(sa.sin_addr.s_addr)) {
+      my_printf("\n*** Your IP address has been permanently blocked.\n\n");
+      bbs_sleep(1);
+      my_exit(0);
+    }
   }
-
   /* used to check user limits here...now just check for file overflow */
   if (bigbtmp->users >= MAXUSERS - 1) {
     errlog("Who list overflow at %i users", bigbtmp->users);

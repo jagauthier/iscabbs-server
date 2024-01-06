@@ -68,6 +68,8 @@ void help(const char *, int);
 void more(const char *, bool);
 int openfiles(void);
 bool open_ip_blocklist(void);
+bool check_ip_blocklist(in_addr_t);
+void display_with_pagination(const char *message, uint8_t rows, int16_t);
 void ip_mgmt_menu(void);
 unsigned char *mmap_file(const char *path, size_t *size)
     __attribute__((nonnull(1, 2)));
@@ -75,7 +77,7 @@ unsigned char *mmap_anonymous(size_t size) __attribute__((alloc_size(1)));
 int errlog(const char *fmt, ...) __attribute__((format(printf, 1, 2)));
 void bbs_sleep(time_t);
 void replace_substring(char *, const char *, const char *);
-
+void cleanup_strings(char *);
 void termset(void);
 
 void locks(int);
