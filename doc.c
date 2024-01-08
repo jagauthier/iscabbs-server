@@ -550,6 +550,7 @@ bool wanttoyell(char cmd) {
 void dologout(void) {
   my_printf("Logout\n\nReally log out? (Y/N) -> ");
   flush_input(0);
+  colorize(ANSI_REVERT);
   if (yesno(-1)) {
     my_printf("\n");
     do_fortune();

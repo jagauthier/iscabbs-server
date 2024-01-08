@@ -1,4 +1,5 @@
 #define ANSI_RESET         "\x1b[0m"ANSI_BG_BLACK
+#define ANSI_REVERT        "\x1b[0m"
 
 // Text formatting
 #define ANSI_BOLD          "\x1b[1m"
