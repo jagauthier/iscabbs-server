@@ -429,7 +429,7 @@ static int32_t newreadmessage(
       if (mh->deleted) {
         char poster_color[4];
         char delby_color[4];
-        char poster_name[MAXALIAS + 1];
+        char poster_name[MAXALIAS + 5];
         user = finduser(0, mh->poster, 0);
         if (user) {
           strcpy(poster_color, BOLD_CYAN);
@@ -472,7 +472,7 @@ static int32_t newreadmessage(
 
         if (*name == '<' && mh->poster_name[0] != 0) {
           name = mh->poster_name;
-          strcpy(poster_color, BOLD_RED);
+          strcpy(poster_color, BOLD_WHITE);
         }
         title = my_sprintf(
             title, BOLD_GREEN " from %s%s%s%s", poster_color, name,
