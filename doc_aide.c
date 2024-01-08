@@ -121,7 +121,7 @@ void aide_menu(void) {
     }
 
     if (chr) {
-      colorize("\n@Y[%s]@M Forum command ->@G ", msg->room[curr].name);
+      colorize(BOLD_YELLOW"\n[%s]"BOLD_MAGENTA" Forum command ->"BOLD_GREEN" ", msg->room[curr].name);
     }
     if (ouruser->f_admin) {
       chr = get_single_quiet("BCDEHiIKlLMOSWXZ* \n/?");
@@ -365,7 +365,7 @@ static void editdesc(void) {
 
   size = 0;
   if (!(infop = mmap_file(descfile, &size)) || !size) {
-    colorize("@RDescription doesn't yet exist@G\n");
+    colorize(BOLD_RED"Description doesn't yet exist.\n"BOLD_GREEN);
     choice = 'B';
   } else {
     readmessage(infop, &dummy, raname, FALSE, 0);
@@ -422,9 +422,9 @@ static void editdesc(void) {
   err = makemessage(NULL, MES_DESC, upload);
 
   if (err == ABORT) {
-    colorize("@RDescription not entered\n@G");
+    colorize(BOLD_RED"Description not entered\n"BOLD_GREEN);
   } else if (err != SAVE) {
-    colorize("@RSome mystical error - can't make description\n@G");
+    colorize(BOLD_RED"Some mystical error - can't make description\n"BOLD_GREEN);
   } else if ((dfd = open(newdescfile, O_WRONLY | O_CREAT | O_EXCL, 0640)) < 0) {
     my_printf("error opening desc file to make final copy\n");
   } else {
@@ -565,7 +565,7 @@ static void editroom(void) {
     my_printf("Anonymous optional\n");
   }
 
-  colorize("@YSave changes? (Y/N) ->@G ");
+  colorize(BOLD_YELLOW"Save changes? (Y/N) -> "BOLD_GREEN);
   if (yesno(-1) == YES) {
     locks(SEM_MSG);
     if (*roomname) {

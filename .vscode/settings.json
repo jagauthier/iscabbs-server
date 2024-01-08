@@ -6,6 +6,7 @@
         "ext.h": "c",
         "typeinfo": "c",
         "stdint.h": "c",
-        "convert_utils.h": "c"
+        "convert_utils.h": "c",
+        "stdlib.h": "c"
     }
 }

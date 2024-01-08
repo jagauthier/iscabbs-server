@@ -8,14 +8,14 @@
 
 static void setup_socket(void) {
   struct sockaddr_in sa;
-  int  one = 1;
+  int one = 1;
 
   close(0);
   if (socket(AF_INET, SOCK_STREAM, 0) != 0) {
     _exit(1);
   }
   one = 1;
-  if (setsockopt(0, SOL_SOCKET, SO_REUSEADDR, &one, sizeof one) < 0) {
+  if (setsockopt(0, SOL_SOCKET, SO_REUSEADDR, &one, sizeof(one)) < 0) {
     _exit(1);
   }
   sa.sin_family = AF_INET;
@@ -36,10 +36,10 @@ static void s_sigalrm2(int signo) {
   }
 }
 
-void bbsfinger(void) {
+void bbsfinger_old(void) {
   int8_t n;
-  int8_t i;
-  int8_t x;
+  int i;
+  int x;
   char *p;
   fd_set rfd;
   struct fd {
@@ -48,28 +48,27 @@ void bbsfinger(void) {
     char buf[24];
   } fd[MAXCONN];
 
-  if (!getenv("INIT_STATE") && fork()) {
-    _exit(0);
-  }
+  // if (fork()) {
+  //   printf("Exit.\n");
+  //   _exit(0);
+  // }
   nice(-20);
   nice(-20);
   nice(20);
 
-  close(0);
-  close(1);
-  close(2);
+  //close(0);
+  //close(1);
+  //close(2);
   setsid();
 
   signal(SIGPIPE, SIG_IGN);
   signal(SIGALRM, s_sigalrm2);
   alarm(30);
 
-#ifdef _WHIP
   ouruser = getuser("Guest");
-#else
-  ouruser = NULL;
-#endif
+
   if (!ouruser) {
+    printf("!ouruser\n");
     _exit(1);
   }
 
@@ -83,7 +82,7 @@ void bbsfinger(void) {
 
   for (;;) {
     FD_ZERO(&rfd);
-    for (x = 0, i = 2; i < MAXCONN; i++) {
+    for (x = 0, i = 3; i < MAXCONN; i++) {
       if (fd[i].conn) {
         FD_SET(i, &rfd);
         x = i;
@@ -92,10 +91,11 @@ void bbsfinger(void) {
       }
     }
     if ((i = select(x + 1, &rfd, 0, 0, 0)) < 0 && errno != EINTR) {
-      errlog("FINGER: select error %d", errno);
+      printf("FINGER: select error %d\n", errno);
+      perror("finger");
       _exit(1);
     } else if (!i) {
-      errlog("FINGER: 0 return from select");
+      printf("FINGER: 0 return from select\n");
       continue;
     } else if (i < 0) {
       for (i = 2; i < MAXCONN; i++) {
@@ -122,7 +122,7 @@ void bbsfinger(void) {
         break;
       }
       if (i != 1) {
-        errlog("FINGER: accepted on fd %d", i);
+        printf("FINGER: accepted on fd %d\n", i);
         close(i);
         break;
       }

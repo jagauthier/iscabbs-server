@@ -19,7 +19,7 @@ void bbsstart(void) {
   reserve_slot();
   do_login();
 
-  colorize("\n@G");
+  colorize("\n" BOLD_GREEN);
 
   curr = LOBBY_RM_NBR;
   inituser();
@@ -43,7 +43,7 @@ void bbsstart(void) {
     }
 
     if (cit_cmd) {
-      colorize("\n@Y%s>@G ", msg->room[curr].name);
+      colorize("\n" BOLD_YELLOW "%s> " BOLD_GREEN, msg->room[curr].name);
     }
 
     checkx(0);
@@ -71,7 +71,7 @@ void bbsstart(void) {
     }
 
     if (guest && !strchr("0123456789BbFGHIJKLNOpPRsSTUwWyY/?#-", cit_cmd)) {
-      colorize("\n\n@RThe Guest user cannot do that. @G\n");
+      colorize(BOLD_RED "\n\nThe Guest user cannot do that.\n" BOLD_GREEN);
       continue;
     }
 
@@ -131,8 +131,8 @@ void bbsstart(void) {
       case 'e':
       case 'E': {
         char work[20];
-
-        if (ouruser->f_newbie && (curr == MAIL_RM_NBR || curr > 4)) {
+        // TODO: FIX FOR BABBLE
+        if (ouruser->f_newbie && (curr == MAIL_RM_NBR || curr != BABBLE_ROOM)) {
           help("newuseraccess", NO);
         } else {
           if (cit_cmd == 'E') {
@@ -464,7 +464,7 @@ void help(const char *topic, int morehelp) {
   }
 
   for (;;) {
-    colorize("\n@YEnter help topic ->@G ");
+    colorize(BOLD_YELLOW "\nEnter help topic -> " BOLD_GREEN);
     get_string("", 29, help_str, -1);
     if (!*help_str) {
       return;
@@ -480,10 +480,10 @@ void help(const char *topic, int morehelp) {
     //    *help_str = tolower(*help_str);
     char *hfile = my_sprintf(NULL, "%s%s%s", HELPDIR, "topics.", help_str);
 
-    //    colorize("\n@WDebug: %s@G\n", hfile);
+    //    colorize("\n"BOLD_WHITE"Debug: %s\n"BOLD_GREEN, hfile);
 
     if ((f = open(hfile, O_RDONLY)) < 0) {
-      colorize("\n@RTopic not found.@G");
+      colorize(BOLD_RED "\nTopic not found." BOLD_GREEN);
     } else {
       close(f);
       more(hfile, 1);
@@ -546,7 +546,6 @@ bool wanttoyell(char cmd) {
   }
   return FALSE;
 }
-
 
 void dologout(void) {
   my_printf("Logout\n\nReally log out? (Y/N) -> ");

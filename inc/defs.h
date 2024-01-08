@@ -92,14 +92,14 @@
 #define MAP_FILE 0
 #endif
 
-#define VERSION "ISCA BBS v0.20 (DOC Version 1.7)"
+#define VERSION "ISCA BBS v0.22 (DOC Version 1.7)"
 
 /* define this to allow the bbs to logout users after n minutes */
 #define IDLELOGOUT	1440
 
 /* define this if you want users logged out after 6000 minutes.  I should
    make this smarter */
-#define	TOTALTIMELIMITw
+#define	TOTALTIMELIMIT_UNUSED
 
 #include "bbs.h"
 #include "proto.h"
@@ -110,6 +110,8 @@
 #endif
 #include "users.h"
 #include "queue.h"
+#include "io.h"
+
 
 extern char **environ;
 

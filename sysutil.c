@@ -70,12 +70,12 @@ void alarmclock(void) {
 
   if (!ouruser && nonew >= 0) {
     colorize(
-        "\n\n\a@CYou have exceeded the time limit for entering your name and "
+        "\n\n\a"BOLD_CYAN"You have exceeded the time limit for entering your name and "
         "password.\n\n");
     my_exit(10);
   } else if (nonew < 0 && logintime == 30) {
     colorize(
-        "\n\n\a@CYou have exceeded the time limit for entering your "
+        "\n\n\a"BOLD_CYAN"You have exceeded the time limit for entering your "
         "information.\n\n");
     my_exit(10);
   }
@@ -84,15 +84,15 @@ void alarmclock(void) {
 
   if (logintime == 6000) {
     colorize(
-        "\n\n\a@CYou have exceeded the maximum login time.  Please call back "
+        "\n\n\a"BOLD_CYAN"You have exceeded the maximum login time.  Please call back "
         "later!\n\n");
     my_putchar(BEL);
     my_exit(10);
   } else if (logintime == 5985) {
-    colorize("\n\n\a@YYou have 15 minutes left before you are logged out!\n\n");
+    colorize("\n\n\a"BOLD_YELLOW"You have 15 minutes left before you are logged out!\n\n");
     fflush(stdout);
   } else if (logintime == 5995) {
-    colorize("\n\n\a@YYou have 5 minutes left before you are logged out!\n\n");
+    colorize("\n\n\a"BOLD_YELLOW"You have 5 minutes left before you are logged out!\n\n");
     fflush(stdout);
   }
 
@@ -121,14 +121,6 @@ void alarmclock(void) {
  * Initialize the system.
  */
 void init_system(void) {
-  char myhost[65];
-  char host[80];
-  int howbad;
-  char *hp;
-  unsigned char *lockoutp;
-  unsigned char *p;
-  size_t size;
-  int i;
   struct sigaction sact;
 
   tty = isatty(0);
@@ -150,52 +142,20 @@ void init_system(void) {
   sact.sa_handler = (void *)s_sigquit;
   sact.sa_flags = 0;
 
-  if (sigaction(SIGQUIT, &sact, NULL)) perror("sigaction");
+  if (sigaction(SIGQUIT, &sact, NULL)) {
+    perror("sigaction");
+  }
 
-  if (!strncmp(*ARGV, "_clientbbs", 10)) client = 1;
+  if (!strncmp(*ARGV, "_clientbbs", 10)) {
+    client = 1;
+  }
 
-  if (!tty) init_states();
+  if (!tty) {
+    init_states();
+  }
 
-  if (tty) myecho(OFF);
-
-  /* Make sure the site is not locked out */
-  size = 0;
-  if ((lockoutp = p = mmap_file(LOCKOUT, &size))) {
-    strncpy(myhost, gethost(), sizeof(myhost) - 1);
-    for (hp = myhost; *hp; hp++) {
-      if (*hp >= 'A' && *hp <= 'Z') {
-        *hp += 32;
-      }
-    }
-    while ((size_t)(p - lockoutp) < size) {
-      for (i = 0; (size_t)(p - lockoutp) < size && *p != '\n'; i++, p++) {
-        host[i] = *p;
-      }
-      host[i] = 0;
-      p++;
-      if (*host && *host != '#' && host[strlen(host) - 2] == ' ') {
-        howbad = host[strlen(host) - 1] - '0' + 1;
-        host[strlen(host) - 2] = 0;
-        for (hp = host; *hp; hp++) {
-          if (*hp >= 'A' && *hp <= 'Z') {
-            *hp += 32;
-          }
-        }
-        hp = (char *)strchr(host, '*');
-        if ((hp && !strncmp(host, myhost, (int)(hp - host)) && hp++ &&
-             !strcmp(hp, myhost + strlen(myhost) - strlen(hp))) ||
-            (!hp && !strcmp(host, myhost))) {
-          if ((nonew = howbad) == 1) {
-            my_printf(
-                "\n\nThe site you are connecting from has been locked out of "
-                "the BBS.  E-mail any\ninquiries about this to "
-                "marxmarv@getoffthe.net.\n\n\n");
-            my_exit(10);
-          }
-        }
-      }
-    }
-    munmap((void *)lockoutp, size);
+  if (tty) {
+    myecho(OFF);
   }
 
   lastbcast = msg->lastbcast;
@@ -280,7 +240,7 @@ void my_exit(int doflush) {
 
   if (doflush) {
     if (ansi) {
-      my_printf("\033[0m");
+      //colorize(RESET""ANSI_FG_WHITE);
     }
     fflush(stdout);
     if (doflush > 1) {
@@ -334,7 +294,7 @@ static void myecho(int mode) {
 int inkey(void) {
   int i = 257;
   int noflush = 1;
-
+  
   while (i > DEL) {
     if (!tty) {
       if ((i = telrcv(&noflush)) < 0) {
@@ -635,10 +595,13 @@ int errlog(const char *fmt, ...) {
 
   // write ctime to buffer
   time_t t = time(0);
-  char *buf = my_sprintf(NULL, "%s ", ctime(&t));
+  char *buf = my_sprintf(NULL, "%s", ctime(&t));
+  
+  // remove the new line
+  buf[strlen(buf)-1]=0;
 
   // append name
-  buf = my_sprintf(buf, "%s ", ouruser ? ouruser->name : "__NONE__");
+  buf = my_sprintf(buf, " (%s): ", ouruser ? ouruser->name : "__NONE__");
 
   // append formatted args
   va_list ap;
@@ -647,7 +610,7 @@ int errlog(const char *fmt, ...) {
   va_end(ap);
 
   // append newline
-  buf = my_sprintf(buf, "%s", "\n");
+  buf = my_sprintf(buf, "\n");
 
   write(fd, buf, strlen(buf));  // TODO: check return
   close(fd);

@@ -421,11 +421,12 @@ void readroom(int cit_cmd) {
     }
 
     for (exitloop = 0, chr = 1; !exitloop;) {
-      if (chr)
-        colorize("@Y[%s> msg #%i (%i remaining)] @CRead cmd -> @G",
+      if (chr) {
+        colorize(BOLD_YELLOW "[%s> msg #%i (%i remaining)] " BOLD_CYAN
+                             "Read cmd -> " BOLD_GREEN,
                  msg->room[curr].name, room->chron[rm_msg_nbr],
                  MSGSPERRM - rm_msg_nbr - 1);
-
+      }
       checkx(0);
 
       if (ouruser->f_admin ||
@@ -441,7 +442,7 @@ void readroom(int cit_cmd) {
       }
 
       if (guest && !strchr("0123456789aABHILNpPSTwWyY ?", chr)) {
-        colorize("\n\n@RThe Guest user cannot do that.@G\n");
+        colorize("\n\n" BOLD_RED "The Guest user cannot do that.\n" BOLD_GREEN);
         continue;
       }
 
@@ -506,9 +507,11 @@ void readroom(int cit_cmd) {
 
         case 'e':
         case 'E':
-          if (ouruser->f_newbie && (curr == MAIL_RM_NBR || curr > 4))
+          // TODO fix this for babble
+          if (ouruser->f_newbie &&
+              (curr == MAIL_RM_NBR || curr != BABBLE_ROOM)) {
             help("newuseraccess", NO);
-          else {
+          } else {
             if (chr == 'E') {
               my_printf("Upload message\n\n");
             } else if (chr == 'e') {
@@ -601,13 +604,13 @@ void readroom(int cit_cmd) {
           my_putchar('\n');
           mh = (struct mheader *)(msgstart + room->pos[rm_msg_nbr]);
           if (mh->deleted) {
-            colorize("@RNo, we're not doing that.\n");
+            colorize(BOLD_RED "No, we're not doing that.\n");
             break;
           }
 
           for (;;) {
             if (curr == DELMSG_RM_NBR) {
-              my_printf("You realize how stupid this is? (Y/N)? -> ");
+              my_printf("Do you realize how dumb this is? (Y/N)? -> ");
             } else {
               my_printf("\nDelete post.  Are you sure (Y/N)? -> ");
             }
@@ -789,7 +792,7 @@ void readroom(int cit_cmd) {
 static void set_read_params(char cit_cmd, int8_t *dir, int16_t *rm_msg_nbr,
                             int32_t *searchkey) {
   int nbr;
-  char nbr_str[12]; 
+  char nbr_str[12];
 
   switch (cit_cmd) {
     case 'B':

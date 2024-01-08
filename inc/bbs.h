@@ -57,6 +57,7 @@
 #define YELLS_RM_NBR		2
 #define SYSOP_RM_NBR		6
 #define DELMSG_RM_NBR		3
+#define BABBLE_ROOM 		16
 #define BACKWARD		(-1)
 #define BEL                     7	/* control-g (bell) */
 #define BS			'\b'	/* back space */
@@ -419,7 +420,8 @@ struct mheader
   char del_room_name[MAXNAME +1];
   uint8_t del_room_num;
   time_t dtime;
-  uint8_t future_use[58];
+  uint32_t old_msgid;
+  uint8_t future_use[54];
   union
   {
     struct
@@ -434,8 +436,10 @@ struct mheader
 struct blocklist{
   uint32_t usernum[MAX_IPS];	 /* who blocked it */
   char     name[MAX_IPS][MAXALIAS + 1];		/* also who blocked it */
-  char     reason[MAX_IPS][40];
+  char     reason[MAX_IPS][60];
   char     ip[MAX_IPS][15];
+  time_t   blocked_time[MAX_IPS];
+  uint16_t hits[MAX_IPS];
 };
 
 
