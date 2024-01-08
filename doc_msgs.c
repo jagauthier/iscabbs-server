@@ -18,7 +18,7 @@ void deletemessage(int32_t delnum, int32_t pos, bool quiet) {
   msg->room[curr].highest = msg->room[curr].num[MSGSPERRM - 1];
   unlocks(SEM_MSG);
   if (!quiet) {
-    colorize(BOLD_RED"Message deleted.\n"BOLD_GREEN);
+    colorize(BOLD_RED "Message deleted.\n" BOLD_GREEN);
   }
 }
 
@@ -50,7 +50,7 @@ int entermessage(int32_t troom, const char *recipient, int8_t upload) {
   int32_t i;
 
   if (curr_rm == LOBBY_RM_NBR && !ouruser->f_admin) {
-    colorize(BOLD_RED"You can't post messages here!\n"BOLD_GREEN);
+    colorize(BOLD_RED "You can't post messages here!\n" BOLD_GREEN);
     return (FALSE);
   } else if (curr_rm == LOBBY_RM_NBR) {
     my_printf("Are you sure you want to post to the Lobby? (Y/N) -> ");
@@ -204,7 +204,9 @@ int entermessage(int32_t troom, const char *recipient, int8_t upload) {
   }
 
   if ((msg->room[curr_rm].flags & QR_ANONONLY) && ouruser->f_noanon) {
-    colorize(BOLD_RED"You are not permitted to post in an anon-only forum.\n"BOLD_GREEN);
+    colorize(
+        BOLD_RED
+        "You are not permitted to post in an anon-only forum.\n" BOLD_GREEN);
     if (tmpuser) {
       freeuser(tmpuser);
     }
@@ -221,9 +223,9 @@ int entermessage(int32_t troom, const char *recipient, int8_t upload) {
   if (err == ABORT) {
     munmap((void *)tmpstart, 53248);
     if (mtype == MES_XYELL) {
-      colorize(BOLD_RED"No X's to you from that user.\n"BOLD_GREEN);
+      colorize(BOLD_RED "No X's to you from that user.\n" BOLD_GREEN);
     } else {
-      colorize(BOLD_RED"Message not entered\n"BOLD_GREEN);
+      colorize(BOLD_RED "Message not entered\n" BOLD_GREEN);
     }
     if (tmpuser) {
       freeuser(tmpuser);
@@ -334,6 +336,7 @@ static int32_t newreadmessage(
   bool show = TRUE;
   char *title = NULL;
   struct user *user;
+  bool old_ansi = false;
 
   struct mheader *mh = (struct mheader *)(void *)p;
 
@@ -364,24 +367,24 @@ static int32_t newreadmessage(
   }
 
   if (mh->mtype == MES_ANON) {
-    title = my_sprintf(title, "%s", BOLD_YELLOW"  ***********  ");
+    title = my_sprintf(title, "%s", BOLD_YELLOW "  ***********  ");
   } else if (mh->mtype == MES_AN2) {
-    title = my_sprintf(title, "%s", BOLD_YELLOW"  -anonymous-  ");
+    title = my_sprintf(title, "%s", BOLD_YELLOW "  -anonymous-  ");
   } else {
     title = my_sprintf(NULL, "%s", "");
   }
 
   char *authfield = strdup(title);
 
-  title = my_sprintf(title, ""BOLD_MAGENTA"%s", formtime(2, mh->ptime));
-  // sprintf(work, ""BOLD_MAGENTA"%s %d, %d %02d:%02d", months[mh->month], mh->day, 1900 +
-  // mh->year, mh->hour, mh->minute);
+  title = my_sprintf(title, "" BOLD_MAGENTA "%s", formtime(2, mh->ptime));
+  // sprintf(work, ""BOLD_MAGENTA"%s %d, %d %02d:%02d", months[mh->month],
+  // mh->day, 1900 + mh->year, mh->hour, mh->minute);
 
   char *name = getusername(mh->poster, 1);
 
   /* This shows the room description */
   if (mh->mtype == MES_DESC) {
-    title = my_sprintf(title, BOLD_GREEN" by "BOLD_CYAN"%s", name);
+    title = my_sprintf(title, BOLD_GREEN " by " BOLD_CYAN "%s", name);
 
     if (msg->room[curr].roomaide) {
       name = getusername(msg->room[curr].roomaide, 0);
@@ -392,10 +395,11 @@ static int32_t newreadmessage(
       name = "(Sysop)";
     }
     strcpy(aname, name);
-    colorize(
-        BOLD_GREEN"\nForum moderator is "BOLD_CYAN"%s"BOLD_GREEN".  Total messages:"BOLD_RED" %i\n"BOLD_GREEN"Forum info "
-        "last updated ",
-        name, msg->room[curr].posted);
+    colorize(BOLD_GREEN "\nForum moderator is " BOLD_CYAN "%s" BOLD_GREEN
+                        ".  Total messages:" BOLD_RED " %i\n" BOLD_GREEN
+                        "Forum info "
+                        "last updated ",
+             name, msg->room[curr].posted);
 
     title = my_sprintf(title, "\n");
     /* now on to regular posts */
@@ -445,14 +449,21 @@ static int32_t newreadmessage(
           strcpy(delby_color, BOLD_RED);
         }
 
-        title = my_sprintf(title, BOLD_GREEN" from %s%s "BOLD_GREEN"deleted by %s%s "BOLD_GREEN"on "BOLD_MAGENTA"%s\n",
+        title = my_sprintf(title,
+                           BOLD_GREEN " from %s%s " BOLD_GREEN
+                                      "deleted by %s%s " BOLD_GREEN
+                                      "on " BOLD_MAGENTA "%s\n",
                            poster_color, poster_name, delby_color,
                            mh->deleted_by_name, formtime(2, mh->dtime));
-        title = my_sprintf(title, BOLD_GREEN"Msg #: "BOLD_YELLOW"%i, "BOLD_GREEN"Room: "BOLD_YELLOW"%s>"BOLD_GREEN,
+        title = my_sprintf(title,
+                           BOLD_GREEN "Msg #: " BOLD_YELLOW "%i, " BOLD_GREEN
+                                      "Room: " BOLD_YELLOW "%s>" BOLD_GREEN,
                            mh->old_msgid, msg->room[mh->del_room_num].name);
         /* room name changed - make note of it */
         if (strcmp(msg->room[mh->del_room_num].name, mh->del_room_name)) {
-          title = my_sprintf(title, " Original: "BOLD_YELLOW"%s>"BOLD_GREEN"\n", mh->del_room_name);
+          title =
+              my_sprintf(title, " Original: " BOLD_YELLOW "%s>" BOLD_GREEN "\n",
+                         mh->del_room_name);
         }
 
       } else {
@@ -462,20 +473,21 @@ static int32_t newreadmessage(
           name = mh->poster_name;
           strcpy(poster_color, BOLD_RED);
         }
-        title = my_sprintf(title, BOLD_GREEN" from %s%s%s%s", poster_color, name,
-                           mh->mtype == MES_FM ? " (Forum Moderator)" : "",
-                           (mh->mtype == MES_SYSOP &&
-                            (!mh->mail || ((*auth && ouruser->f_aide) ||
-                                           (!*auth && !ouruser->f_aide))))
-                               ? " (Sysop)"
-                               : "");
+        title = my_sprintf(
+            title, BOLD_GREEN " from %s%s%s%s", poster_color, name,
+            mh->mtype == MES_FM ? " (Forum Moderator)" : "",
+            (mh->mtype == MES_SYSOP &&
+             (!mh->mail ||
+              ((*auth && ouruser->f_aide) || (!*auth && !ouruser->f_aide))))
+                ? " (Sysop)"
+                : "");
       }
     } else if (!*auth && !ouruser->f_prog &&
                ouruser->usernum != msg->room[curr].roomaide) {
       show = FALSE;
       *profile_default = '\0';
     } else if (*auth) {
-      title = my_sprintf(title, BOLD_GREEN" from "BOLD_CYAN"%s", name);
+      title = my_sprintf(title, BOLD_GREEN " from " BOLD_CYAN "%s", name);
     }
   }
 
@@ -487,18 +499,19 @@ static int32_t newreadmessage(
     name = getusername(mh->ext.mail.recipient, 1);
 
     title =
-        my_sprintf(title, BOLD_GREEN" to "BOLD_CYAN"%s%s", name,
+        my_sprintf(title, BOLD_GREEN " to " BOLD_CYAN "%s%s", name,
                    (mh->mtype == MES_SYSOP && ((*auth && !ouruser->f_aide) ||
                                                (!*auth && ouruser->f_aide)))
                        ? " (Sysop)"
                        : "");
   } else if (mh->quotedx) {
-    title = my_sprintf(title, " "BOLD_CYAN"(Quoted X's)");
+    title = my_sprintf(title, " " BOLD_CYAN "(Quoted X's)");
   }
 
   if (curr != MAIL_RM_NBR && mh->mtype != MES_DESC && curr != mh->forum &&
       curr != YELLS_RM_NBR && curr != DELMSG_RM_NBR) {
-    title = my_sprintf(title, BOLD_GREEN" in "BOLD_YELLOW"%s>", msg->room[mh->forum].name);
+    title = my_sprintf(title, BOLD_GREEN " in " BOLD_YELLOW "%s>",
+                       msg->room[mh->forum].name);
   }
 
   if (new) {
@@ -510,7 +523,7 @@ static int32_t newreadmessage(
   } else {
     colorize("%s", authfield);
   }
-  colorize(BOLD_GREEN"\n");
+  colorize(BOLD_GREEN "\n");
 
   p += mh->hlen;
   // int16_t msgsize = mh->len;
@@ -524,7 +537,10 @@ static int32_t newreadmessage(
         break;
       }
     }*/
+  old_ansi = ansi;
+  ansi = false;
   display_with_pagination((const char *)p, rows - 1, linenbr);
+  ansi = old_ansi;
 
   free(authfield);
   free(title);
@@ -803,9 +819,12 @@ int8_t makemessage(
     for (i = 0, cmd = ' '; cmd != 'C' && cmd != 'P';) {
       checkx(1);
       if (!client && cmd != 'q' && i != 1) {
-        colorize(
-            BOLD_YELLOW"<A>"BOLD_CYAN"bort "BOLD_YELLOW"<C>"BOLD_CYAN"ontinue "BOLD_YELLOW"<P>"BOLD_CYAN"rint "BOLD_YELLOW"<S>"BOLD_CYAN"ave "BOLD_YELLOW"<X>"BOLD_CYAN"press "
-            "-> "BOLD_GREEN);
+        colorize(BOLD_YELLOW "<A>" BOLD_CYAN "bort " BOLD_YELLOW "<C>" BOLD_CYAN
+                             "ontinue " BOLD_YELLOW "<P>" BOLD_CYAN
+                             "rint " BOLD_YELLOW "<S>" BOLD_CYAN
+                             "ave " BOLD_YELLOW "<X>" BOLD_CYAN
+                             "press "
+                             "-> " BOLD_GREEN);
       }
       cmd = get_single_quiet(" \nACPSqQx?/");
       if (strchr("qQx?/", cmd)) {
@@ -829,7 +848,7 @@ int8_t makemessage(
 
         case 'A':
           if (!client) {
-            colorize(BOLD_RED"Abort:"BOLD_GREEN" are you sure? ");
+            colorize(BOLD_RED "Abort:" BOLD_GREEN " are you sure? ");
             if (yesno(-1) == NO) {
               break;
             }
