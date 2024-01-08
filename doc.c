@@ -19,7 +19,7 @@ void bbsstart(void) {
   reserve_slot();
   do_login();
 
-  colorize("\n" BOLD_GREEN);
+  colorize("\n" ANSI_BOLD""BOLD_GREEN);
 
   curr = LOBBY_RM_NBR;
   inituser();

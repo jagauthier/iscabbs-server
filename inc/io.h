@@ -1,4 +1,4 @@
-#define ANSI_RESET         "\x1b[0m"ANSI_BG_BLACK
+#define ANSI_RESET         "\x1b[0m"
 #define ANSI_REVERT        "\x1b[0m"
 
 // Text formatting
@@ -9,24 +9,24 @@
 #define ANSI_CONCEAL       "\x1b[8m"
 
 // Foreground colors
-#define ANSI_FG_BLACK      ANSI_RESET"\x1b[30m"ANSI_BG_BLACK
-#define ANSI_FG_RED        ANSI_RESET"\x1b[31m"ANSI_BG_BLACK
-#define ANSI_FG_GREEN      ANSI_RESET"\x1b[32m"ANSI_BG_BLACK
-#define ANSI_FG_YELLOW     ANSI_RESET"\x1b[33m"ANSI_BG_BLACK
-#define ANSI_FG_BLUE       ANSI_RESET"\x1b[34m"ANSI_BG_BLACK
-#define ANSI_FG_MAGENTA    ANSI_RESET"\x1b[35m"ANSI_BG_BLACK
-#define ANSI_FG_CYAN       ANSI_RESET"\x1b[36m"ANSI_BG_BLACK
-#define ANSI_FG_WHITE      ANSI_RESET"\x1b[37m"ANSI_BG_BLACK
+#define ANSI_FG_BLACK      "\x1b[30m"
+#define ANSI_FG_RED        "\x1b[31m"
+#define ANSI_FG_GREEN      "\x1b[32m"
+#define ANSI_FG_YELLOW     "\x1b[33m"
+#define ANSI_FG_BLUE       "\x1b[34m"
+#define ANSI_FG_MAGENTA    "\x1b[35m"
+#define ANSI_FG_CYAN       "\x1b[36m"
+#define ANSI_FG_WHITE      "\x1b[37m"
 
 // Foreground colors
-#define ANSI_FG_BOLD_BLACK      ANSI_BOLD"\x1b[30m"ANSI_BG_BLACK
-#define ANSI_FG_BOLD_RED        ANSI_BOLD"\x1b[31m"ANSI_BG_BLACK
-#define ANSI_FG_BOLD_GREEN      ANSI_BOLD"\x1b[32m"ANSI_BG_BLACK
-#define ANSI_FG_BOLD_YELLOW     ANSI_BOLD"\x1b[33m"ANSI_BG_BLACK
-#define ANSI_FG_BOLD_BLUE       ANSI_BOLD"\x1b[34m"ANSI_BG_BLACK
-#define ANSI_FG_BOLD_MAGENTA    ANSI_BOLD"\x1b[35m"ANSI_BG_BLACK
-#define ANSI_FG_BOLD_CYAN       ANSI_BOLD"\x1b[36m"ANSI_BG_BLACK
-#define ANSI_FG_BOLD_WHITE      ANSI_BOLD"\x1b[37m"ANSI_BG_BLACK
+#define ANSI_FG_BOLD_BLACK      "\x1b[30m"
+#define ANSI_FG_BOLD_RED        "\x1b[31m"
+#define ANSI_FG_BOLD_GREEN      "\x1b[32m"
+#define ANSI_FG_BOLD_YELLOW     "\x1b[33m"
+#define ANSI_FG_BOLD_BLUE       "\x1b[34m"
+#define ANSI_FG_BOLD_MAGENTA    "\x1b[35m"
+#define ANSI_FG_BOLD_CYAN       "\x1b[36m"
+#define ANSI_FG_BOLD_WHITE      "\x1b[37m"
 
 // Background colors
 #define ANSI_BG_BLACK      "\x1b[40m"

@@ -455,6 +455,7 @@ static int32_t newreadmessage(
                                       "on " BOLD_MAGENTA "%s\n",
                            poster_color, poster_name, delby_color,
                            mh->deleted_by_name, formtime(2, mh->dtime));
+
         title = my_sprintf(title,
                            BOLD_GREEN "Msg #: " BOLD_YELLOW "%i, " BOLD_GREEN
                                       "Room: " BOLD_YELLOW "%s>" BOLD_GREEN,
