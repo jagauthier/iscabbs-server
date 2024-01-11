@@ -226,7 +226,7 @@ int profile(const char *name, struct user *tuser, int flags) {
   struct btmp userstat;
   bool online;
   bool showanon;
-
+  
   if (!name) {
     tmpuser = tuser;
   } else if (*name) {
@@ -243,6 +243,7 @@ int profile(const char *name, struct user *tuser, int flags) {
   if (rows != 32000) {
     colorize(BOLD_CYAN"\n");
   }
+
   my_printf("%s", tmpuser->name);
 
   if (tmpuser->f_prog && flags == PROF_ALL) {

@@ -155,13 +155,14 @@ static int my_puts(const char* s) {
 int colorize(const char* fmt, ...) {
   // delegate to my_vsprintf
   va_list ap;
+
   va_start(ap, fmt);
   char* buf = my_vsprintf(NULL, fmt, ap);
   va_end(ap);
 
   // write it
   int rc = my_cputs(buf);
-  free(buf);
+  free(buf);  
   return rc;
 }
 
